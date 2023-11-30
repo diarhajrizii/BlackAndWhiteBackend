@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>A4 Grid</title>
+    <style>
+      /* @media print { */
+      .d-flex {
+        display: -ms-flexbox !important;
+        display: flex !important;
+      }
+      .justify-content-center {
+        -ms-flex-pack: center !important;
+        justify-content: center !important;
+        padding: 20px !important;
+        margin: 2px;
+        /* text-align: center; */
+      }
+      .row {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        margin-right: -15px;
+        margin-left: -15px;
+      }
+      .col-12 {
+        -ms-flex: 0 0 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+
+      body {
+        margin: 0; /* Reset default margin for printing */
+      }
+      .page {
+        width: 210mm; /* A4 width */
+        height: 297mm; /* A4 height */
+        margin: 0; /* Clear margin */
+        padding: 0; /* No padding */
+        box-sizing: border-box;
+        display: flex;
+        flex-wrap: wrap;
+        line-height: 0; /* Remove line height */
+      }
+      .grid-item {
+        width: calc(
+          33.3333% - 1px
+        ) !important; /* Adjust width for 4 items in a row, considering borders */
+        height: calc(
+          100% / 7 - 1px
+        ) !important; /* Adjust height for 8 rows, considering borders */
+        /* border: 1px solid black; */
+        box-sizing: border-box;
+        display: inline-flex; /* Use inline-flex to remove space between items */
+        align-items: center;
+        justify-content: center;
+        margin: 0; /* Remove default margin */
+        page-break-inside: avoid; /* Avoid breaking items into multiple pages */
+      }
+      .b {
+        font-weight: bold;
+        font-size: 50px;
+      }
+      .m {
+        font-weight: 600;
+        font-size: 30px;
+        margin: 1px;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .border {
+        border: 1px solid black;
+      }
+      /* } */
+    </style>
+  </head>
+  <body class="page">
+    <!-- This div will be repeated 24 times to create the grid -->
+    <div class="grid-item d-flex justify-content-center text-center row">
+      <div class="col-12 b">2112</div>
+      <div class="col-12 m">Black</div>
+      <div class="col-12 b">36</div>
+    </div>
+  </body>
+</html>
