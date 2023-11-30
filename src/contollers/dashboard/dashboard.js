@@ -1,6 +1,5 @@
 const { query } = require("../../services/db.service");
 module.exports = async function sportType(req, res) {
-  console.log("Spo mbesohet blla");
   try {
     const data = await query({
       connection: dbMain,

@@ -4,7 +4,7 @@ const app = express();
 
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const dbMain = require("./src/configs/dbMain.config");
+const dbMain = require("./src/configs/dbCMS.config");
 
 const sportsRoutes = require("./src/routes/sports/sports.routes");
 
