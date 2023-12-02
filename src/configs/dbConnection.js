@@ -38,26 +38,51 @@ module.exports = {
     return dbConnection;
   },
 
-  async executeMultiQuery({ query, value, dbType }) {
-    const connection = await module.exports.getConnection(dbType);
+  async executeMultiQuery({ queries, values, dbType }) {
+    const connection = await module.exports.getConnection("main");
     return new Promise((resolve, rejected) => {
-      connection.query(query, value, function (err, result) {
+      connection.beginTransaction(function (err) {
         if (err) {
-          connection.rollback(function () {
-            connection.end();
-            return rejected({ status: false, err });
-          });
-        } else {
-          connection.commit(function (err) {
-            if (err) {
-              return connection.rollback(function () {
-                return rejected({ status: false, err });
-              });
-            }
-            connection.end();
-            return resolve({ status: true, data: result });
-          });
+          return rejected({ status: false, err });
         }
+
+        const promises = [];
+
+        for (let i = 0; i < queries.length; i++) {
+          const query = queries[i];
+          const value = values[i];
+
+          const promise = new Promise((resolveQuery, rejectQuery) => {
+            connection.query(query, value, function (err, result) {
+              if (err) {
+                return rejectQuery(err);
+              }
+              return resolveQuery(result);
+            });
+          });
+
+          promises.push(promise);
+        }
+
+        Promise.all(promises)
+          .then((results) => {
+            connection.commit(function (err) {
+              if (err) {
+                return connection.rollback(function () {
+                  connection.end();
+                  return rejected({ status: false, err });
+                });
+              }
+              connection.end();
+              return resolve({ status: true, data: results });
+            });
+          })
+          .catch((error) => {
+            connection.rollback(function () {
+              connection.end();
+              return rejected({ status: false, error });
+            });
+          });
       });
     });
   },

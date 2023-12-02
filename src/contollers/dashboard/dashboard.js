@@ -1,4 +1,5 @@
 const { query } = require("../../services/db.service");
+const { successfulReturn, errorReturn } = require("../../utils/response");
 module.exports = async function sportType(req, res) {
   try {
     const data = await query({
@@ -7,8 +8,9 @@ module.exports = async function sportType(req, res) {
       params: [],
     });
     console.log(data);
-    return res.status(400).json({ data });
+    return successfulReturn({ data: data }, res);
   } catch (e) {
-    return e;
+    console.log(e);
+    return errorReturn({ e, res });
   }
 };

@@ -13,11 +13,10 @@ module.exports = {
   },
 
   errorReturn: ({ e, res }) => {
-    console.log(e);
     const resData = {
       success: false,
       code: "1000",
-      message: e,
+      message: e.message,
     };
 
     res.set(getHeaders({ method: "all" }));
