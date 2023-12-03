@@ -8,7 +8,7 @@ const dbMain = require("./src/configs/dbCMS.config");
 
 const sportsRoutes = require("./src/routes/sports/sports.routes");
 const productsRoutes = require("./src/routes/products/products.routes");
-const cmsRoutes = require("./src/routes/cms/cms.routes");
+const cmsPanelsRoutes = require("./src/routes/cms-panels/cmsPanels.routes");
 
 const port = process.env.PORT || 3005;
 
@@ -41,7 +41,7 @@ app.use(bodyParser.json({ limit: "100mb", extended: true }));
 
 app.use("/api/v1/sports", sportsRoutes);
 app.use("/api/v1/products", productsRoutes);
-app.use("/api/v1/cms", cmsRoutes);
+app.use("/api/v1/panels", cmsPanelsRoutes);
 
 app.get("/", (req, res) => {
   res.send("Swifty Backoffice is running :) ");
