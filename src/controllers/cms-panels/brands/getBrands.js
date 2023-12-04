@@ -3,7 +3,7 @@ const { query } = require("../../../services/db.service");
 
 module.exports = async function getBrands(req, res) {
   try {
-    const sql = `SELECT * FROM brands`;
+    const sql = `SELECT id, name AS brandName, produced FROM brands`;
     const brands = await query({ sql, params: [], connection: dbMain });
     return successfulReturn({ data: brands }, res);
   } catch (error) {

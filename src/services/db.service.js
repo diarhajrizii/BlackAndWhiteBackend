@@ -79,7 +79,7 @@ async function insertv2({ table, params, connection }) {
 
       connection.query(query, query_values, (err, result) => {
         if (err) throw err;
-        return resolve({ status: true, result });
+        return resolve(result.insertId);
       });
     } catch (error) {
       return reject({ status: false, message: error.message });

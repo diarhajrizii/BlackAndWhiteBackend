@@ -3,7 +3,7 @@ const { query } = require("../../../services/db.service");
 
 module.exports = async function getColors(req, res) {
   try {
-    const sql = `SELECT * FROM colors`;
+    const sql = `SELECT id, name AS colorName, sq AS albanianName, en AS englishName, tr AS turkishName FROM colors`;
     const colors = await query({ sql, params: [], connection: dbMain });
     return successfulReturn({ data: colors }, res);
   } catch (error) {

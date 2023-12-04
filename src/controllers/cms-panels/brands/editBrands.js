@@ -1,19 +1,19 @@
 const { successfulReturn, errorReturn } = require("../../../utils/response");
-const { insertv2 } = require("../../../services/db.service");
+const { updateV2 } = require("../../../services/db.service");
 
-module.exports = async function addBrand(req, res) {
+module.exports = async function editBrands(req, res) {
   try {
-    const { brandName, produced } = req.body;
+    const { id, brandName, produced } = req.body;
     const params = { name: brandName, produced };
-
-    const insertID = await insertv2({
-      table: "brands",
+    await updateV2({
+      table_name: "brands",
       params,
+      where: { id },
       connection: dbMain,
     });
 
     return successfulReturn(
-      { message: "Brand added successfully", data: insertID },
+      { message: "Brand edited successfully", data: [] },
       res
     );
   } catch (error) {

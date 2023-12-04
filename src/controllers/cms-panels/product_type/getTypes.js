@@ -3,7 +3,7 @@ const { query } = require("../../../services/db.service");
 
 module.exports = async function getTypes(req, res) {
   try {
-    const sql = `SELECT * FROM product_type`;
+    const sql = `SELECT id, name AS type FROM product_type`;
     const types = await query({ sql, params: [], connection: dbMain });
     return successfulReturn({ data: types }, res);
   } catch (error) {
