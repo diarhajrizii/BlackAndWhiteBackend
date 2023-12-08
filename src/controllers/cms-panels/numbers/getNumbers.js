@@ -3,7 +3,7 @@ const { query } = require("../../../services/db.service");
 
 module.exports = async function getNumbers(req, res) {
   try {
-    const sql = `SELECT * FROM numbers`;
+    const sql = `SELECT id, number FROM numbers`;
     const numbers = await query({ sql, params: [], connection: dbMain });
     return successfulReturn({ data: numbers }, res);
   } catch (error) {

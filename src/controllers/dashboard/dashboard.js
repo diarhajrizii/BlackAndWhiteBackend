@@ -7,7 +7,6 @@ module.exports = async function sportType(req, res) {
       sql: "SELECT * FROM companies",
       params: [],
     });
-    console.log(data);
     return successfulReturn({ data: data }, res);
   } catch (e) {
     console.log(e);

@@ -38,7 +38,7 @@ module.exports = {
     return dbConnection;
   },
 
-  async executeMultiQuery({ queries, values, dbType }) {
+  async executeMultiQuery({ queries, values, useTransaction }) {
     const connection = await module.exports.getConnection("main");
     return new Promise((resolve, rejected) => {
       connection.beginTransaction(function (err) {
