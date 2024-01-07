@@ -1,11 +1,5 @@
-const moment = require("moment");
 const { query } = require("../services/db.service");
-const {
-  reportTypes,
-  reportTypeFilters,
-  queriesToMainDB,
-  queriesToGS,
-} = require("../constants/reportTypes");
+
 // Get IP from request header
 function getIP(req) {
   return (
@@ -624,8 +618,26 @@ function generateRandomPasswordString(length) {
   }
   return result;
 }
+// Check if user exists function
+async function checkIfUserExists(email) {
+  const sql = "SELECT * FROM users WHERE email = ?";
+  const [user] = await query({
+    sql,
+    params: [email],
+    connection: dbMain,
+  });
+  return !!user;
+}
+
+// Regular expression for email validation
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
 
 module.exports = {
+  checkIfUserExists,
+  validateEmail,
   getIP,
   getDevice,
   getCurrentDateTime,
@@ -639,7 +651,6 @@ module.exports = {
   getUnixDateTimeForDb,
   returnUniqueArray,
   arrayToObj,
-  playerNameMarketsIds,
   setSportIdBySlug,
   getCurrentDateTimeDatabase,
   setSportSlugById,
@@ -650,7 +661,6 @@ module.exports = {
   isObjectEmpty,
   generateUID,
   getS3Folder,
-  slugs,
   getFileNames,
   capitalizeFirstLetter,
   nullToEmpty,

@@ -1,5 +1,5 @@
 const { successfulReturn, errorReturn } = require("../../../utils/response");
-const { query, insertv2 } = require("../../../services/db.service");
+const { query, insertV2 } = require("../../../services/db.service");
 
 module.exports = async function addColor(req, res) {
   try {
@@ -12,7 +12,7 @@ module.exports = async function addColor(req, res) {
       tr: turkishName,
     };
 
-    const insertID = await insertv2({
+    const insertID = await insertV2({
       table: "colors",
       params,
       connection: dbMain,

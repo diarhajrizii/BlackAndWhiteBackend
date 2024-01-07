@@ -40,6 +40,12 @@ module.exports = {
 
   async executeMultiQuery({ queries, values, useTransaction }) {
     const connection = await module.exports.getConnection("main");
+    if (!useTransaction) {
+      // Execute queries without transaction
+      const results = await executeQueries(connection, queries, values);
+      return { status: true, data: results };
+    }
+
     return new Promise((resolve, rejected) => {
       connection.beginTransaction(function (err) {
         if (err) {
@@ -85,5 +91,34 @@ module.exports = {
           });
       });
     });
+  },
+
+  async executeQueries(connection, queries, values) {
+    const promises = [];
+
+    for (let i = 0; i < queries.length; i++) {
+      const query = queries[i];
+      const value = values[i];
+
+      const promise = new Promise((resolveQuery, rejectQuery) => {
+        connection.query(query, value, function (err, result) {
+          if (err) {
+            return rejectQuery(err);
+          }
+          return resolveQuery(result);
+        });
+      });
+
+      promises.push(promise);
+    }
+
+    try {
+      const results = await Promise.all(promises);
+      connection.end();
+      return results;
+    } catch (error) {
+      connection.end();
+      throw error;
+    }
   },
 };

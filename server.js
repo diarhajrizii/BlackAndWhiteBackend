@@ -6,9 +6,10 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const dbMain = require("./src/configs/dbCMS.config");
 
-const sportsRoutes = require("./src/routes/sports/sports.routes");
+const authenticationRoutes = require("./src/routes/authentications/authentications.routes");
 const productsRoutes = require("./src/routes/products/products.routes");
 const cmsPanelsRoutes = require("./src/routes/cms-panels/cmsPanels.routes");
+const transactionsRoutes = require("./src/routes/transactions/transactions.routes");
 
 const port = process.env.PORT || 3005;
 
@@ -39,12 +40,13 @@ app.use(
 );
 app.use(bodyParser.json({ limit: "100mb", extended: true }));
 
-app.use("/api/v1/sports", sportsRoutes);
 app.use("/api/v1/products", productsRoutes);
 app.use("/api/v1/panels", cmsPanelsRoutes);
+app.use("/api/v1/transactions", transactionsRoutes);
+app.use("/api/v1/authentication", authenticationRoutes);
 
 app.get("/", (req, res) => {
-  res.send("Swifty Backoffice is running :) ");
+  res.send("Black&White Backend is running :) ");
 });
 
 app.use((err, req, res, next) => {
@@ -56,6 +58,6 @@ app.use((err, req, res, next) => {
 
 app.listen(port, () => {
   console.log(
-    `Swifty Backend is running on port ${process.env.STAGE}:${port}!`
+    `BlackAndWhite Backend is running on port ${process.env.STAGE}:${port}!`
   );
 });

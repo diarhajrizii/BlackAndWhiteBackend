@@ -24,6 +24,7 @@ module.exports = async function transferProducts(req, res) {
       values: updateValues,
       useTransaction: true,
       dbType: dbMain,
+      useTransaction: true,
     });
 
     return successfulReturn({ message: "Location updated successfully" }, res);

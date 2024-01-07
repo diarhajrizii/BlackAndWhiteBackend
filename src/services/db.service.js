@@ -49,10 +49,10 @@ async function update({ query, query_values, connection }) {
   });
 }
 
-async function insertv2({ table, params, connection }) {
+async function insertV2({ table_name, params, connection }) {
   return new Promise((resolve, reject) => {
     try {
-      if (!table) throw { message: "Table name is required" };
+      if (!table_name) throw { message: "Table name is required" };
       if (!params) throw { message: "column name is required" };
       if (!connection) throw { message: "Connection is required" };
 
@@ -75,7 +75,7 @@ async function insertv2({ table, params, connection }) {
         }
         query_values.push(params[column_name]);
       }
-      query = `INSERT INTO ${table} (${insert_query}) VALUES (${insert_values});`;
+      query = `INSERT INTO ${table_name} (${insert_query}) VALUES (${insert_values});`;
 
       connection.query(query, query_values, (err, result) => {
         if (err) throw err;
@@ -175,7 +175,7 @@ module.exports = {
   query,
   insert,
   update,
-  insertv2,
+  insertV2,
   deletev2,
   asyncQuery,
   updateV2,
