@@ -10,46 +10,12 @@ async function query({ sql, params, connection }) {
         return resolve({ status: true, data: result });
       });
     } catch (error) {
-      return reject({ status: false, message: error.message });
+      return reject(error);
     }
   });
 }
 
-async function insert({ query, query_values, connection }) {
-  return new Promise((resolve, reject) => {
-    try {
-      if (!connection) throw { message: "Connection is required" };
-      if (!query) throw { message: "Query is required" };
-      if (!query_values) throw { message: "Query values is required" };
-
-      connection.query(query, query_values, (err, result) => {
-        if (err) throw err;
-        return resolve({ status: true, data: result });
-      });
-    } catch (error) {
-      return reject({ status: false, message: error.message });
-    }
-  });
-}
-
-async function update({ query, query_values, connection }) {
-  return new Promise((resolve, reject) => {
-    try {
-      if (!connection) throw { message: "Connection is required" };
-      if (!query) throw { message: "Query is required" };
-      if (!query_values) throw { message: "Query values is required" };
-
-      connection.query(query, query_values, (err, result) => {
-        if (err) throw err;
-        return resolve({ status: true, data: result });
-      });
-    } catch (error) {
-      return reject({ status: false, message: error.message });
-    }
-  });
-}
-
-async function insertV2({ table_name, params, connection }) {
+async function insert({ table_name, params, connection }) {
   return new Promise((resolve, reject) => {
     try {
       if (!table_name) throw { message: "Table name is required" };
@@ -58,7 +24,7 @@ async function insertV2({ table_name, params, connection }) {
 
       const columns = Object.keys(params);
       let query = "";
-      let query_values = [];
+      const query_values = [];
       let insert_query = "";
       let insert_values = "";
       for (let i = 0; i < columns.length; i++) {
@@ -82,12 +48,12 @@ async function insertV2({ table_name, params, connection }) {
         return resolve(result.insertId);
       });
     } catch (error) {
-      return reject({ status: false, message: error.message });
+      return reject(error);
     }
   });
 }
 
-async function updateV2({ table_name, params, where, connection }) {
+async function update({ table_name, params, where, connection }) {
   try {
     if (!connection) throw { message: "Connection is required" };
     if (!table_name) throw { message: "Table name is required" };
@@ -120,53 +86,55 @@ async function updateV2({ table_name, params, where, connection }) {
     }
 
     // EXECUTE
-    const result = await new Promise((resolve, reject) => {
+    const result = await new Promise((resolve, rejected) => {
       connection.query(query, query_params, (err, result) => {
         if (err) {
-          reject(err);
+          throw err;
+        } else {
+          return resolve(result);
+        }
+      });
+    });
+    return resolve(result);
+  } catch (error) {
+    return rejected(error);
+    // throw new Error(error.message);
+  }
+}
+
+async function deleteV1({ table_name, where, connection = dbMain }) {
+  return new Promise((resolve, rejected) => {
+    try {
+      if (!connection) throw { message: "Connection is required" };
+      if (!table_name) throw { message: "table_name is required" };
+      if (!where) throw { message: "Where condition parameter is required" };
+
+      let query = `DELETE FROM ${table_name}`;
+      const query_params = [];
+      // WHERE
+      query += " WHERE ";
+      const whereKeys = Object.keys(where);
+      for (let i = 0; i < whereKeys.length; i++) {
+        const element = whereKeys[i];
+        query += `${element} = ?`;
+        query_params.push(where[element]);
+        if (i + 1 !== whereKeys.length) {
+          query += ` AND `;
+        }
+      }
+      console.log(query, query_params);
+
+      // EXECUTE
+      connection.query(query, query_params, (err, result) => {
+        if (err) {
+          throw err;
         } else {
           resolve(result);
         }
       });
-    });
-
-    return { status: true, result };
-  } catch (error) {
-    throw new Error(error.message);
-  }
-}
-
-async function deletev2({ query, query_values, connection }) {
-  return new Promise((resolve, rejected) => {
-    try {
-      if (!connection) throw { message: "Connection is required" };
-      if (!query) throw { message: "Query is required" };
-      if (!query_values) throw { message: "Query values is required" };
-
-      connection.query(query, query_values, (err, result) => {
-        if (err) throw err;
-        return resolve({ status: true, data: result });
-      });
     } catch (error) {
-      return { status: false, message: error.message };
-    }
-  });
-}
-
-async function asyncQuery({ sql, params, connection }) {
-  return new Promise((resolve, reject) => {
-    try {
-      if (!connection) throw { message: "Connection is required" };
-      if (!sql) throw { message: "Query is required" };
-      if (!params) throw { message: "Query values is required" };
-
-      connection.execute(sql, params, (err, result) => {
-        if (err) throw err;
-        return resolve(result);
-      });
-    } catch (error) {
-      console.log(error);
-      return reject({ status: false, message: error.message });
+      console.error(error);
+      return rejected(error);
     }
   });
 }
@@ -175,8 +143,5 @@ module.exports = {
   query,
   insert,
   update,
-  insertV2,
-  deletev2,
-  asyncQuery,
-  updateV2,
+  deleteV1,
 };

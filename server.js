@@ -32,18 +32,21 @@ const corsOptions = {
 global.dbMain = dbMain;
 
 app.use(cors(corsOptions));
+
 app.use(
   bodyParser.urlencoded({
     limit: "10mb",
     extended: true,
   })
 );
+
 app.use(bodyParser.json({ limit: "100mb", extended: true }));
 
-app.use("/api/v1/products", productsRoutes);
-app.use("/api/v1/panels", cmsPanelsRoutes);
-app.use("/api/v1/transactions", transactionsRoutes);
-app.use("/api/v1/authentication", authenticationRoutes);
+const constantApi = "/api/v1";
+app.use(`${constantApi}/products`, productsRoutes);
+app.use(`${constantApi}/panels`, cmsPanelsRoutes);
+app.use(`${constantApi}/transactions`, transactionsRoutes);
+app.use(`${constantApi}/authentication`, authenticationRoutes);
 
 app.get("/", (req, res) => {
   res.send("Black&White Backend is running :) ");
