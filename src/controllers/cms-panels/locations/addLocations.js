@@ -1,12 +1,12 @@
 const { successfulReturn, errorReturn } = require("../../../utils/response");
-const { insertV2 } = require("../../../services/db.service");
+const { insert } = require("../../../services/db.service");
 
 module.exports = async function addLocation(req, res) {
   try {
     const { name } = req.body;
 
-    const insertID = await insertV2({
-      table: "locations",
+    const insertID = await insert({
+      table_name: "locations",
       params: { name },
       connection: dbMain,
     });

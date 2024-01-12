@@ -1,5 +1,5 @@
 const { successfulReturn, errorReturn } = require("../../../utils/response");
-const { insertV2 } = require("../../../services/db.service");
+const { insert } = require("../../../services/db.service");
 
 module.exports = async function addType(req, res) {
   try {
@@ -7,8 +7,8 @@ module.exports = async function addType(req, res) {
 
     // Perform validation checks on number if necessary
 
-    const insertID = await insertV2({
-      table: "product_type",
+    const insertID = await insert({
+      table_name: "product_type",
       params: { name: type },
       connection: dbMain,
     });

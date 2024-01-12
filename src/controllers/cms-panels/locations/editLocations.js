@@ -1,11 +1,11 @@
 const { successfulReturn, errorReturn } = require("../../../utils/response");
-const { updateV2 } = require("../../../services/db.service");
+const { update } = require("../../../services/db.service");
 
 module.exports = async function editLocation(req, res) {
   try {
     const { id, name } = req.body;
     const params = { name };
-    await updateV2({
+    await update({
       table_name: "locations",
       params,
       where: { id },

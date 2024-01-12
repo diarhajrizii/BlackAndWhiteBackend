@@ -1,5 +1,5 @@
 const { successfulReturn, errorReturn } = require("../../../utils/response");
-const { updateV2 } = require("../../../services/db.service");
+const { update } = require("../../../services/db.service");
 
 module.exports = async function editType(req, res) {
   try {
@@ -7,7 +7,7 @@ module.exports = async function editType(req, res) {
     const { id, type } = req.body;
     const params = { name: type };
 
-    await updateV2({
+    await update({
       table_name: "product_type",
       params,
       where: { id },

@@ -1,4 +1,4 @@
-const { insertV2 } = require("../../services/db.service");
+const { insert } = require("../../services/db.service");
 const { validateEmail, checkIfUserExists } = require("../../utils/helper.util");
 const { successfulReturn, errorReturn } = require("../../utils/response");
 const bcrypt = require("bcrypt");
@@ -19,7 +19,7 @@ module.exports = async function register(req, res) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await insertV2({
+    await insert({
       table_name: "users",
       params: { email, username, password: hashedPassword },
       connection: dbMain,

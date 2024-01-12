@@ -1,5 +1,5 @@
 const { successfulReturn, errorReturn } = require("../../../utils/response");
-const { updateV2 } = require("../../../services/db.service");
+const { update } = require("../../../services/db.service");
 
 module.exports = async function editColor(req, res) {
   try {
@@ -13,7 +13,7 @@ module.exports = async function editColor(req, res) {
       tr: turkishName,
     };
 
-    await updateV2({
+    await update({
       table_name: "colors",
       params,
       where: { id },

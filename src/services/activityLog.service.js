@@ -1,5 +1,5 @@
 const { getCurrentDateTime } = require("../utils/helper.util");
-const { insertV2 } = require("./db.service");
+const { insert } = require("./db.service");
 
 async function activityLog({ user_id, type, value, description }) {
   user_id = user_id || 0;
@@ -15,8 +15,8 @@ async function activityLog({ user_id, type, value, description }) {
   if (value) params.value = value;
   params.description = description;
 
-  await insertV2({
-    table: "cms_users_activity",
+  await insert({
+    table_name: "cms_users_activity",
     params,
     connection: dbCMS,
   });

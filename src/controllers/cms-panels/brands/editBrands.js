@@ -1,11 +1,11 @@
 const { successfulReturn, errorReturn } = require("../../../utils/response");
-const { updateV2 } = require("../../../services/db.service");
+const { update } = require("../../../services/db.service");
 
 module.exports = async function editBrands(req, res) {
   try {
     const { id, brandName, produced } = req.body;
     const params = { name: brandName, produced };
-    await updateV2({
+    await update({
       table_name: "brands",
       params,
       where: { id },
