@@ -29,7 +29,6 @@ module.exports = async function signIn(req, res) {
     const token = jwt.sign({ id: user.id }, secretKey, {
       expiresIn: "1h",
     });
-    console.log({ token });
 
     return successfulReturn({ data: token }, res);
   } catch (error) {
