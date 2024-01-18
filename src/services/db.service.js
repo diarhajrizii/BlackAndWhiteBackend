@@ -54,39 +54,40 @@ async function insert({ table_name, params, connection }) {
 }
 
 async function update({ table_name, params, where, connection }) {
-  try {
-    if (!connection) throw { message: "Connection is required" };
-    if (!table_name) throw { message: "Table name is required" };
-    if (!params) throw { message: "Parameters are required" };
-    if (!where) throw { message: "Where condition parameter is required" };
-    let query = `UPDATE ${table_name} SET `;
-    const query_params = [];
+  return new Promise((resolve, reject) => {
+    try {
+      if (!connection) throw { message: "Connection is required" };
+      if (!table_name) throw { message: "Table name is required" };
+      if (!params) throw { message: "Parameters are required" };
+      if (!where) throw { message: "Where condition parameter is required" };
+      let query = `UPDATE ${table_name} SET `;
+      const query_params = [];
 
-    // UPDATE COLUMNS
-    const keys = Object.keys(params);
-    for (let i = 0; i < keys.length; i++) {
-      const key_name = keys[i];
-      query += `${key_name} = ?`;
-      query_params.push(params[key_name]);
-      if (i + 1 !== keys.length) {
-        query += `, `;
+      // UPDATE COLUMNS
+      const keys = Object.keys(params);
+      for (let i = 0; i < keys.length; i++) {
+        const key_name = keys[i];
+        query += `${key_name} = ?`;
+        query_params.push(params[key_name]);
+        if (i + 1 !== keys.length) {
+          query += `, `;
+        }
       }
-    }
 
-    // WHERE
-    query += " WHERE ";
-    const whereKeys = Object.keys(where);
-    for (let i = 0; i < whereKeys.length; i++) {
-      const element = whereKeys[i];
-      query += `${element} = ?`;
-      query_params.push(where[element]);
-      if (i + 1 !== whereKeys.length) {
-        query += ` AND `;
+      // WHERE
+      query += " WHERE ";
+      const whereKeys = Object.keys(where);
+      for (let i = 0; i < whereKeys.length; i++) {
+        const element = whereKeys[i];
+        query += `${element} = ?`;
+        query_params.push(where[element]);
+        if (i + 1 !== whereKeys.length) {
+          query += ` AND `;
+        }
       }
-    }
 
-    // EXECUTE
-    const result = await new Promise((resolve, rejected) => {
+      // EXECUTE
+
       connection.query(query, query_params, (err, result) => {
         if (err) {
           throw err;
@@ -94,12 +95,10 @@ async function update({ table_name, params, where, connection }) {
           return resolve(result);
         }
       });
-    });
-    return resolve(result);
-  } catch (error) {
-    return rejected(error);
-    // throw new Error(error.message);
-  }
+    } catch (error) {
+      return reject(error);
+    }
+  });
 }
 
 async function deleteV1({ table_name, where, connection = dbMain }) {

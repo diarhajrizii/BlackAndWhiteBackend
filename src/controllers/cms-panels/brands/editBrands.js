@@ -3,8 +3,8 @@ const { update } = require("../../../services/db.service");
 
 module.exports = async function editBrands(req, res) {
   try {
-    const { id, brandName, produced } = req.body;
-    const params = { name: brandName, produced };
+    const { id, brandName, produced, type } = req.body;
+    const params = { name: brandName, produced, type };
     await update({
       table_name: "brands",
       params,

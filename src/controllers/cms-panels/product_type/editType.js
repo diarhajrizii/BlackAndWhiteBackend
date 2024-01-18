@@ -4,11 +4,12 @@ const { update } = require("../../../services/db.service");
 module.exports = async function editType(req, res) {
   try {
     console.log(req.body);
-    const { id, type } = req.body;
-    const params = { name: type };
+    const { id, type, specificType } = req.body;
+
+    const params = { name: specificType, type };
 
     await update({
-      table_name: "product_type",
+      table_name: "product_specific_types",
       params,
       where: { id },
       connection: dbMain,

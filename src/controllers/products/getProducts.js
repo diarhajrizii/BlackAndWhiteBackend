@@ -12,7 +12,7 @@ module.exports = async function getProducts(req, res) {
         FROM        products P
         LEFT JOIN colors C
         ON P.color_id = C.id
-        LEFT JOIN product_type PT
+        LEFT JOIN product_specific_types PT
         ON P.type_id = PT.id
         LEFT JOIN brands B
         ON P.brand_id = B.id

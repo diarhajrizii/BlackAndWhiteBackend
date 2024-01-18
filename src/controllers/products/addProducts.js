@@ -4,8 +4,17 @@ const { executeMultiQuery } = require("../../configs/dbConnection");
 
 module.exports = async function addProducts(req, res) {
   try {
-    const { code, brand, type, color, stockPrice, importPrice, sizes } =
-      req.body;
+    const {
+      code,
+      brand,
+      type,
+      color,
+      stockPrice,
+      importPrice,
+      sizes,
+      productType,
+    } = req.body;
+
     const queries = [];
     const values = [];
     let productsQuantity = 0;
@@ -14,10 +23,10 @@ module.exports = async function addProducts(req, res) {
       const { size, quantity } = sizeObj;
       productsQuantity += quantity;
       for (let i = 0; i < quantity; i++) {
-        const barcode = `${code}-${brand}-${size}-${i + 1}`;
+        const barcode = `${code}-${brand}-${size}-${color}`;
         const insertProductQuery = `
-          INSERT INTO products (code, brand_id, type_id, color_id, price, import_price, number, barcode, date)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+          INSERT INTO products (code, brand_id, type_id, color_id, price, import_price, number, barcode, date, type)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?)
         `;
         queries.push(insertProductQuery);
         values.push([
@@ -29,6 +38,7 @@ module.exports = async function addProducts(req, res) {
           importPrice,
           size,
           barcode,
+          productType,
         ]);
       }
     }

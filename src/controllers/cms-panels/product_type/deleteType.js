@@ -5,7 +5,7 @@ module.exports = async function deleteType(req, res) {
   try {
     const { id } = req.body;
     await deletev2({
-      query: "DELETE FROM product_type WHERE id = ?",
+      query: "DELETE FROM product_specific_types WHERE id = ?",
       query_values: [id],
       connection: dbMain,
     });

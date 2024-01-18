@@ -3,12 +3,12 @@ const { insert } = require("../../../services/db.service");
 
 module.exports = async function addNumber(req, res) {
   try {
-    const { number } = req.body; // Assuming number is sent in the request body
+    const { number, type } = req.body; // Assuming number is sent in the request body
     // Perform validation checks on number if necessary
 
     const insertID = await insert({
       table_name: "numbers",
-      params: { number },
+      params: { number, type },
       connection: dbMain,
     });
 

@@ -29,13 +29,13 @@ module.exports = async function getTransactions(req, res) {
 
         C.name AS color_name, 
         B.name AS brand_name,
-        PT.name AS product_type 
+        PT.name AS product_specific_types 
 
       FROM transactions T
       LEFT JOIN products P ON T.product_id = P.id
       LEFT JOIN colors C ON P.color_id = C.id
       LEFT JOIN brands B ON P.brand_id = B.id
-      LEFT JOIN product_type PT ON P.type_id = PT.id
+      LEFT JOIN product_specific_types PT ON P.type_id = PT.id
     `;
 
     const transactions = await query({ sql, params: [], connection: dbMain });
