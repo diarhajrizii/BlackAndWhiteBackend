@@ -4,7 +4,6 @@ const { executeMultiQuery } = require("../../configs/dbConnection");
 module.exports = async function sellProducts(req, res) {
   try {
     const salesData = req.body;
-
     const queries = [];
     const values = [];
 
@@ -35,9 +34,20 @@ module.exports = async function sellProducts(req, res) {
 
       const updateQuery = `
         UPDATE products
-        SET saled = 1, transaction_id = LAST_INSERT_ID()
-        WHERE id = ?
+        SET
+          saled = CASE
+                    WHEN type = 'accessories' THEN 0
+                    ELSE 1
+                  END,
+          quantity = CASE
+                      WHEN type = 'accessories' THEN quantity - 1
+                      ELSE quantity
+                    END,
+          transaction_id = LAST_INSERT_ID()
+        WHERE id = ?;
+      
       `;
+
       const updateValue = [sale.id];
 
       queries.push(updateQuery);

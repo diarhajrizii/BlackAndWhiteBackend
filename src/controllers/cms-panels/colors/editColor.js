@@ -3,7 +3,6 @@ const { update } = require("../../../services/db.service");
 
 module.exports = async function editColor(req, res) {
   try {
-    console.log(req.body);
     const { id, colorName, albanianName, englishName, turkishName } = req.body;
 
     const params = {

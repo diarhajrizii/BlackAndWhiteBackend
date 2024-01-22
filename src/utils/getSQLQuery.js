@@ -28,7 +28,18 @@ function getSQLQuery(queryCode, vars = "") {
 
 const getSelectQuery = (code, vars = "") => {
   const queries = {
-    1000: ``,
+    // See Transactions Price for all Year
+    1000: ` 
+      SELECT
+          Year,
+          SUM(TotalSales) AS TotalSales
+      FROM
+          sys.MonthlySales
+      WHERE
+          Year = 2023
+      GROUP BY
+          Year;
+    `,
   };
 
   return queries[code];

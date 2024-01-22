@@ -3,6 +3,12 @@ const { successfulReturn, errorReturn } = require("../../utils/response");
 
 module.exports = async function getProducts(req, res) {
   try {
+    const type = req.query.type;
+    const groupByFilter = type === "sales" ? `GROUP BY P.barcode` : ``;
+    const quantityFilter =
+      type === "sales"
+        ? `COALESCE(MAX(P.quantity), (SELECT COUNT(*) FROM products P2 WHERE P2.barcode = P.barcode AND saled = 0)) AS quantity,`
+        : ``;
     const sql = `
       SELECT
           P.id,
@@ -17,9 +23,9 @@ module.exports = async function getProducts(req, res) {
           P.date,
           P.type,
           P.location_id,
-          COUNT(P.barcode) AS quantity,
+          ${quantityFilter}
           C.name AS color,
-          PT.name AS type,
+          PT.name AS specific_type,
           B.name AS brand,
           B.produced,
           L.name AS location
@@ -33,10 +39,10 @@ module.exports = async function getProducts(req, res) {
           brands B ON P.brand_id = B.id
       LEFT JOIN 
           locations L ON P.location_id = L.id
-      GROUP BY
-          P.barcode;
-
+      WHERE p.saled = 0 AND (P.type <> "accessories" OR P.quantity <> 0)
+      ${groupByFilter};
     `;
+
     const products = await query({ sql, params: [], connection: dbMain });
     return successfulReturn({ data: products }, res);
   } catch (error) {

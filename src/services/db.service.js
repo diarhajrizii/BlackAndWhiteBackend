@@ -121,8 +121,6 @@ async function deleteV1({ table_name, where, connection = dbMain }) {
           query += ` AND `;
         }
       }
-      console.log(query, query_params);
-
       // EXECUTE
       connection.query(query, query_params, (err, result) => {
         if (err) {
@@ -138,9 +136,27 @@ async function deleteV1({ table_name, where, connection = dbMain }) {
   });
 }
 
+async function deletev2({ query, query_values, connection }) {
+  return new Promise((resolve, rejected) => {
+    try {
+      if (!connection) throw { message: "Connection is required" };
+      if (!query) throw { message: "Query is required" };
+      if (!query_values) throw { message: "Query values is required" };
+
+      connection.query(query, query_values, (err, result) => {
+        if (err) throw err;
+        return resolve({ status: true, data: result });
+      });
+    } catch (error) {
+      return { status: false, message: error.message };
+    }
+  });
+}
+
 module.exports = {
   query,
   insert,
   update,
   deleteV1,
+  deletev2,
 };

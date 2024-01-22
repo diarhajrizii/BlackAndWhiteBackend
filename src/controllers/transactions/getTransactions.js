@@ -3,6 +3,9 @@ const { successfulReturn, errorReturn } = require("../../utils/response");
 
 module.exports = async function getTransactions(req, res) {
   try {
+    const date = req.query.date;
+
+    const dateFilter = date ? `WHERE DATE(T.date) = ?` : ``;
     const sql = `
       SELECT 
         T.type, 
@@ -36,9 +39,15 @@ module.exports = async function getTransactions(req, res) {
       LEFT JOIN colors C ON P.color_id = C.id
       LEFT JOIN brands B ON P.brand_id = B.id
       LEFT JOIN product_specific_types PT ON P.type_id = PT.id
-    `;
+      ${dateFilter}
+      `;
 
-    const transactions = await query({ sql, params: [], connection: dbMain });
+    const transactions = await query({
+      sql,
+      params: [date],
+      connection: dbMain,
+    });
+
     return successfulReturn({ data: transactions }, res);
   } catch (error) {
     console.error(error);
