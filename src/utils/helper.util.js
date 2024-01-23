@@ -263,6 +263,24 @@ function validateEmail(email) {
   return emailRegex.test(email);
 }
 
+const fetchYearlyTotalSales = async (year) => {
+  const sql = `
+    SELECT CAST(TotalSales AS DECIMAL(10,2)) AS TotalSales
+    FROM MonthlySales
+    WHERE Year = ${year}
+  `;
+
+  const { data } = await query({
+    sql,
+    params: [],
+    connection: dbMain,
+  });
+
+  return Array.isArray(data)
+    ? data.map((result) => parseFloat(result.TotalSales))
+    : [];
+};
+
 module.exports = {
   checkIfUserExists,
   validateEmail,
@@ -285,4 +303,5 @@ module.exports = {
   capitalizeFirstLetter,
   nullToEmpty,
   generateRandomPasswordString,
+  fetchYearlyTotalSales,
 };
