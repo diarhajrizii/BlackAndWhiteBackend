@@ -10,6 +10,7 @@ const authenticationRoutes = require("./src/routes/authentications/authenticatio
 const productsRoutes = require("./src/routes/products/products.routes");
 const cmsPanelsRoutes = require("./src/routes/cms-panels/cmsPanels.routes");
 const transactionsRoutes = require("./src/routes/transactions/transactions.routes");
+const administrationRoutes = require("./src/routes/administrations/administration.routes");
 
 const port = process.env.PORT || 3005;
 
@@ -46,6 +47,7 @@ const constantApi = "/api/v1";
 app.use(`${constantApi}/products`, productsRoutes);
 app.use(`${constantApi}/panels`, cmsPanelsRoutes);
 app.use(`${constantApi}/transactions`, transactionsRoutes);
+app.use(`${constantApi}/administration`, administrationRoutes);
 app.use(`${constantApi}/authentication`, authenticationRoutes);
 
 app.get("/", (req, res) => {

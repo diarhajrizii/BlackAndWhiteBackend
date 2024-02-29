@@ -1,5 +1,4 @@
 const { query } = require("../services/db.service");
-
 // Get IP from request header
 function getIP(req) {
   return (
@@ -18,6 +17,22 @@ function getDevice(req) {
 // get Current Date Time
 function getCurrentDateTime() {
   return moment().format("YYYY-MM-DD HH:mm:ss");
+}
+function getNewDate() {
+  return new Date().toISOString().slice(0, 19).replace("T", " ");
+}
+
+const formatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/New_York", // Set your desired timezone
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+});
+function currentTimeZone() {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
 
 // Get Database connection
@@ -287,6 +302,7 @@ module.exports = {
   getIP,
   getDevice,
   getCurrentDateTime,
+  getNewDate,
   getConnection,
   activityLogs,
   getFileParams,
@@ -304,4 +320,6 @@ module.exports = {
   nullToEmpty,
   generateRandomPasswordString,
   fetchYearlyTotalSales,
+  currentTimeZone,
+  formatter,
 };
