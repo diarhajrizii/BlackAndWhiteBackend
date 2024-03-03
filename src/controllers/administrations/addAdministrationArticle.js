@@ -4,13 +4,13 @@ const { insert } = require("../../services/db.service");
 module.exports = async function addArticle(req, res) {
   insert;
   try {
-    const { name, administrationNumber } = req.body;
+    const { name, article_id } = req.body;
 
     const insertID = await insert({
       table_name: "administration_articles",
       params: {
         name,
-        article_id: administrationNumber,
+        article_id,
       },
       connection: dbMain,
     });
