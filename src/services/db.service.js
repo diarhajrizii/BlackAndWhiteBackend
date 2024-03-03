@@ -1,4 +1,4 @@
-async function query({ sql, params, connection }) {
+async function query({ sql, params = [], connection = dbMain }) {
   return new Promise((resolve, reject) => {
     try {
       if (!connection) throw { message: "Connection is required" };
