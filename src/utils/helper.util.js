@@ -1,4 +1,6 @@
 const { query } = require("../services/db.service");
+const getSQLQuery = require("./getSQLQuery.js");
+
 // Get IP from request header
 function getIP(req) {
   return (
@@ -278,7 +280,7 @@ function validateEmail(email) {
   return emailRegex.test(email);
 }
 
-const fetchYearlyTotalSales = async (year) => {
+const fetchYearlyTotalSalesFromMonthlyTable = async (year) => {
   const sql = `
     SELECT CAST(TotalSales AS DECIMAL(10,2)) AS TotalSales
     FROM MonthlySales
@@ -294,6 +296,31 @@ const fetchYearlyTotalSales = async (year) => {
   return Array.isArray(data)
     ? data.map((result) => parseFloat(result.TotalSales))
     : [];
+};
+
+const fetchYearlyTotalSales = async (year) => {
+  try {
+    const sql = getSQLQuery([1002], year);
+
+    const { data: result } = await query({
+      sql: sql,
+      connection: dbMain,
+    });
+
+    const salesArray = Array.from({ length: 12 }, (_, monthIndex) => {
+      const monthData = result.find(
+        (row) => row.Month === (monthIndex + 1).toString().padStart(2, "0")
+      );
+
+      // Use a conditional statement to set the value based on the monthData
+      return monthData ? parseFloat(monthData.TotalSales) : 0;
+    });
+
+    return salesArray;
+  } catch (error) {
+    console.error(error);
+    return Array.from({ length: 12 }, () => 0);
+  }
 };
 
 module.exports = {
@@ -322,4 +349,5 @@ module.exports = {
   fetchYearlyTotalSales,
   currentTimeZone,
   formatter,
+  fetchYearlyTotalSalesFromMonthlyTable,
 };

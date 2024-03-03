@@ -10,7 +10,7 @@ module.exports = async function getYearsSalesTransactions(req, res) {
       totalSalesArray2021,
       totalSalesArray2020,
     ] = await Promise.all([
-      fetchYearlyTotalSales(currentYear - 1),
+      fetchYearlyTotalSales(currentYear),
       fetchYearlyTotalSales(currentYear - 2),
       fetchYearlyTotalSales(currentYear - 3),
       fetchYearlyTotalSales(currentYear - 4),
