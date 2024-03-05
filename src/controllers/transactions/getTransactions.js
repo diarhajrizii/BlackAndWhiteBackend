@@ -29,7 +29,7 @@ module.exports = {
           P.import_price,
           P.date AS product_date,
           P.barcode,
-          P.saled,
+          P.sold,
           P.transaction_id AS product_transaction_id,
   
           C.name AS color_name, 

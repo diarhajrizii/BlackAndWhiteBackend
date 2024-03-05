@@ -67,6 +67,25 @@ module.exports = async function addProducts(req, res) {
             barcode,
             productType,
           ]);
+          const currentDate = new Date()
+            .toISOString()
+            .slice(0, 19)
+            .replace("T", " ");
+
+          const insertQuery = `
+            INSERT INTO transactions (type, product_id, date, price, transaction_type, product_type)
+            VALUES (?, LAST_INSERT_ID(), ?, ?, ?, ?)
+          `;
+          const insertValue = [
+            "buy",
+            currentDate,
+            importPrice,
+            "outcome",
+            productType,
+          ];
+
+          queries.push(insertQuery);
+          values.push(insertValue);
         }
       }
     }

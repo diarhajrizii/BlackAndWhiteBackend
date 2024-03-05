@@ -5,9 +5,10 @@ module.exports = async function getProducts(req, res) {
   try {
     const type = req.query.type;
     const groupByFilter = type === "sales" ? `GROUP BY P.barcode` : ``;
+    const soldFilter = type === "sold" ? "p.sold = 1" : "p.sold = 0";
     const quantityFilter =
       type === "sales"
-        ? `COALESCE(MAX(P.quantity), (SELECT COUNT(*) FROM products P2 WHERE P2.barcode = P.barcode AND saled = 0)) AS quantity,`
+        ? `COALESCE(MAX(P.quantity), (SELECT COUNT(*) FROM products P2 WHERE P2.barcode = P.barcode AND sold = 0)) AS quantity,`
         : ``;
     const sql = `
       SELECT
@@ -39,7 +40,8 @@ module.exports = async function getProducts(req, res) {
           brands B ON P.brand_id = B.id
       LEFT JOIN 
           locations L ON P.location_id = L.id
-      WHERE p.saled = 0 AND (P.type <> "accessories" OR P.quantity <> 0)
+      WHERE p.sold = 0 
+      AND (P.type <> "accessories" OR P.quantity <> 0)
       ${groupByFilter};
     `;
 

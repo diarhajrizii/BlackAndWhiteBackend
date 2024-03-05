@@ -241,33 +241,30 @@ const getSelectQuery = (code, vars = "") => {
           ORDER BY MS.Month;
       `,
     1006: `
-        WITH MonthTable AS (
-          SELECT
-            DATE_FORMAT(CURDATE() - INTERVAL a.a + (10 * b.a) + (100 * c.a) MONTH, '%m') AS Month
-          FROM
-            (SELECT 0 AS a UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3) AS a
-          CROSS JOIN
-            (SELECT 0 AS a UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3) AS b
-          CROSS JOIN
-            (SELECT 0 AS a UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3) AS c
-        )
+      WITH MonthTable AS (
         SELECT
-          mt.Month,
-          IFNULL(COUNT(t.id), 0) AS QuantitySold
+          LPAD(MONTH(CURDATE() - INTERVAL a.a MONTH), 2, '0') AS Month
         FROM
-          MonthTable mt
-        LEFT JOIN
-          transactions t ON DATE_FORMAT(t.date, '%Y-%m') = CONCAT('2024-', mt.Month)
-          AND t.type = 'sale'
-        WHERE
-          mt.Month IS NOT NULL
-        GROUP BY
-          mt.Month
+          (SELECT 0 AS a UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3) AS a
         ORDER BY
-          mt.Month;
-    
-    
-      `,
+          a.a
+      )
+      SELECT
+        mt.Month,
+        IFNULL(COUNT(t.id), 0) AS QuantitySold
+      FROM
+        MonthTable mt
+      LEFT JOIN
+        transactions t ON MONTH(t.date) = mt.Month
+        AND YEAR(t.date) = 2024
+        AND t.type = 'sale'
+      WHERE
+        mt.Month IS NOT NULL
+      GROUP BY
+        mt.Month
+      ORDER BY
+        mt.Month; 
+    `,
     1007: `
       WITH Calendar AS (
         SELECT '01' AS Month UNION ALL

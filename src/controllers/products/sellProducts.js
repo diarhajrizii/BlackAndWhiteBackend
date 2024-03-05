@@ -13,8 +13,8 @@ module.exports = async function sellProducts(req, res) {
         .replace("T", " ");
 
       const insertQuery = `
-        INSERT INTO transactions (type, product_id, date, payment_type, bank_name, discount_price, price, transaction_type, product_type)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO transactions (type, product_id, date, payment_type, bank_name, discount_price, price, transaction_type, product_type, sale_type)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
       const discountPrice = Number(sale.regular_price) - Number(sale.price);
       const insertValue = [
@@ -25,8 +25,9 @@ module.exports = async function sellProducts(req, res) {
         sale.bank,
         discountPrice,
         sale.price,
-        "outcome",
+        "income",
         sale.type,
+        sale.sale_type,
       ];
 
       queries.push(insertQuery);
@@ -35,7 +36,7 @@ module.exports = async function sellProducts(req, res) {
       const updateQuery = `
         UPDATE products
         SET
-          saled = CASE
+          sold = CASE
                     WHEN type = 'accessories' THEN 0
                     ELSE 1
                   END,
