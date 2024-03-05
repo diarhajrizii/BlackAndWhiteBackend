@@ -3,30 +3,28 @@ const { successfulReturn, errorReturn } = require("../../utils/response");
 
 module.exports = async function getYearsSalesTransactions(req, res) {
   try {
-    const currentYear = new Date().getFullYear();
-    const [
-      totalSalesArray2023,
-      totalSalesArray2022,
-      totalSalesArray2021,
-      totalSalesArray2020,
-    ] = await Promise.all([
-      fetchYearlyTotalSales(currentYear),
-      fetchYearlyTotalSales(currentYear - 2),
-      fetchYearlyTotalSales(currentYear - 3),
-      fetchYearlyTotalSales(currentYear - 4),
-    ]);
+    const { years, type } = req.body;
 
-    return successfulReturn(
-      {
-        data: {
-          totalSalesArray2023,
-          totalSalesArray2022,
-          totalSalesArray2021,
-          totalSalesArray2020,
-        },
-      },
-      res
+    if (!years || !Array.isArray(years)) {
+      return errorReturn({
+        error: "Invalid or missing 'years' array in the request body",
+        res,
+      });
+    }
+
+    const yearlyTotalSales = await Promise.all(
+      years.map(async (year) => {
+        try {
+          const salesArray = await fetchYearlyTotalSales(year, type);
+          return { year, salesArray };
+        } catch (error) {
+          console.error(`Error fetching sales for ${year}:`, error);
+          return { year, salesArray: Array.from({ length: 12 }, () => 0) };
+        }
+      })
     );
+
+    return successfulReturn({ data: yearlyTotalSales }, res);
   } catch (error) {
     console.error(error);
     return errorReturn({ error, res });

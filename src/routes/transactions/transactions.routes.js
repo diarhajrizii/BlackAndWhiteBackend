@@ -5,6 +5,6 @@ const {
 const getYearsSalesTransactions = require("../../controllers/transactions/getYearsSalesTransactions");
 const router = express.Router();
 router.get("/", getTransactions);
-router.get("/years", getYearsSalesTransactions);
+router.post("/years", getYearsSalesTransactions);
 
 module.exports = router;

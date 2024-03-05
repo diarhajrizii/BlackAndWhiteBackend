@@ -297,26 +297,65 @@ const fetchYearlyTotalSalesFromMonthlyTable = async (year) => {
     ? data.map((result) => parseFloat(result.TotalSales))
     : [];
 };
+function getQuantitySoldArray(salesArray) {
+  const quantityArray = salesArray.map((monthData) =>
+    parseInt(monthData.QuantitySold || 0)
+  );
 
-const fetchYearlyTotalSales = async (year) => {
+  return quantityArray;
+}
+
+function getTotalSalesArray(array) {
+  const salesArray = Array.from({ length: 12 }, (_, monthIndex) => {
+    const monthData = array.find(
+      (row) => row.Month === (monthIndex + 1).toString().padStart(2, "0")
+    );
+
+    // Use a conditional statement to set the value based on the monthData
+    return monthData ? parseFloat(monthData.TotalSales) : 0;
+  });
+  return salesArray;
+}
+function getCategoryCode(type) {
+  let categoryCode;
+  switch (type) {
+    case "shoes":
+      categoryCode = [1003];
+      break;
+    case "textile":
+      categoryCode = [1004];
+      break;
+    case "accessories":
+      categoryCode = [1005];
+      break;
+    case "quantity":
+      categoryCode = [1006];
+      break;
+    case "onlinePrices":
+      categoryCode = [1007];
+      break;
+    default:
+      categoryCode = [1002];
+      break;
+  }
+  return categoryCode;
+}
+const fetchYearlyTotalSales = async (years, type) => {
   try {
-    const sql = getSQLQuery([1002], year);
+    const categoryCode = getCategoryCode(type);
+    const sql = getSQLQuery(categoryCode, years);
 
     const { data: result } = await query({
-      sql: sql,
+      sql,
       connection: dbMain,
+      params: [],
     });
 
-    const salesArray = Array.from({ length: 12 }, (_, monthIndex) => {
-      const monthData = result.find(
-        (row) => row.Month === (monthIndex + 1).toString().padStart(2, "0")
-      );
-
-      // Use a conditional statement to set the value based on the monthData
-      return monthData ? parseFloat(monthData.TotalSales) : 0;
-    });
-
-    return salesArray;
+    const resultArray =
+      type === "quantity"
+        ? getQuantitySoldArray(result)
+        : getTotalSalesArray(result);
+    return resultArray;
   } catch (error) {
     console.error(error);
     return Array.from({ length: 12 }, () => 0);
@@ -350,4 +389,5 @@ module.exports = {
   currentTimeZone,
   formatter,
   fetchYearlyTotalSalesFromMonthlyTable,
+  getTotalSalesArray,
 };

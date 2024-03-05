@@ -6,7 +6,6 @@ module.exports = async function sellProducts(req, res) {
     const salesData = req.body;
     const queries = [];
     const values = [];
-
     salesData.forEach((sale) => {
       const currentDate = new Date()
         .toISOString()
@@ -14,8 +13,8 @@ module.exports = async function sellProducts(req, res) {
         .replace("T", " ");
 
       const insertQuery = `
-        INSERT INTO transactions (type, product_id, date, payment_type, bank_name, discount_price, price, transaction_type)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO transactions (type, product_id, date, payment_type, bank_name, discount_price, price, transaction_type, product_type)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
       const discountPrice = Number(sale.regular_price) - Number(sale.price);
       const insertValue = [
@@ -27,6 +26,7 @@ module.exports = async function sellProducts(req, res) {
         discountPrice,
         sale.price,
         "outcome",
+        sale.type,
       ];
 
       queries.push(insertQuery);
