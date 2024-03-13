@@ -11,6 +11,7 @@ const productsRoutes = require("./src/routes/products/products.routes");
 const cmsPanelsRoutes = require("./src/routes/cms-panels/cmsPanels.routes");
 const transactionsRoutes = require("./src/routes/transactions/transactions.routes");
 const administrationRoutes = require("./src/routes/administrations/administration.routes");
+const { auth } = require("./src/controllers/middleware/auth.middelware");
 
 const port = process.env.PORT || 3005;
 
@@ -30,6 +31,7 @@ const corsOptions = {
   ],
 };
 
+global.secretKey = process.env.SECRET_KEY;
 global.dbMain = dbMain;
 
 app.use(cors(corsOptions));
@@ -49,6 +51,11 @@ app.use(`${constantApi}/panels`, cmsPanelsRoutes);
 app.use(`${constantApi}/transactions`, transactionsRoutes);
 app.use(`${constantApi}/administration`, administrationRoutes);
 app.use(`${constantApi}/authentication`, authenticationRoutes);
+
+app.get(`${constantApi}/verify/token`, auth, (req, res) => {
+  console.log({ isValid: req.isValid });
+  res.json({ isValid: req.isValid, user: req.user });
+});
 
 app.get("/", (req, res) => {
   res.send("Black&White Backend is running :) ");

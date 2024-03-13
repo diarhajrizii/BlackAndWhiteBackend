@@ -4,7 +4,6 @@ async function query({ sql, params = [], connection = dbMain }) {
       if (!connection) throw { message: "Connection is required" };
       if (!sql) throw { message: "Query is required" };
       if (!params) throw { message: "Parameters are required" };
-
       connection.query(sql, params, (err, result) => {
         if (err) throw err;
         return resolve({ status: true, data: result });
