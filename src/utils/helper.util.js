@@ -334,6 +334,9 @@ function getCategoryCode(type) {
     case "onlinePrices":
       categoryCode = [1007];
       break;
+    case "bankPrices":
+      categoryCode = [1008];
+      break;
     default:
       categoryCode = [1002];
       break;

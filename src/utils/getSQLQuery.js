@@ -291,6 +291,32 @@ const getSelectQuery = (code, vars = "") => {
           c.Month
       ORDER BY
           c.Month;`,
+    1008: `      
+      WITH Calendar AS (
+        SELECT '01' AS Month UNION ALL
+        SELECT '02' AS Month UNION ALL
+        SELECT '03' AS Month UNION ALL
+        SELECT '04' AS Month UNION ALL
+        SELECT '05' AS Month UNION ALL
+        SELECT '06' AS Month UNION ALL
+        SELECT '07' AS Month UNION ALL
+        SELECT '08' AS Month UNION ALL
+        SELECT '09' AS Month UNION ALL
+        SELECT '10' AS Month UNION ALL
+        SELECT '11' AS Month UNION ALL
+        SELECT '12' AS Month
+      )
+      SELECT
+          c.Month,
+          IFNULL(SUM(CASE WHEN t.payment_type = 'bank' THEN t.price ELSE 0 END), 0) AS TotalSales
+      FROM
+          Calendar c
+      LEFT JOIN
+          transactions t ON c.Month = DATE_FORMAT(t.date, '%m') AND t.type = 'sale' AND YEAR(t.date) = 2024
+      GROUP BY
+          c.Month
+      ORDER BY
+          c.Month;`,
   };
 
   return queries[code];

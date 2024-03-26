@@ -7,7 +7,7 @@ module.exports = {
     try {
       const date = req.query.date;
 
-      const dateFilter = date ? `WHERE DATE(T.date) = ?` : ``;
+      const dateFilter = date ? `AND DATE(T.date) = ?` : ``;
       const sql = `
         SELECT 
           T.type, 
@@ -41,12 +41,14 @@ module.exports = {
         LEFT JOIN colors C ON P.color_id = C.id
         LEFT JOIN brands B ON P.brand_id = B.id
         LEFT JOIN product_specific_types PT ON P.type_id = PT.id
+        WHERE T.transaction_type = "income"
+        AND company_id = ?
         ${dateFilter}
         `;
 
       const transactions = await query({
         sql,
-        params: [date],
+        params: [0, date],
         connection: dbMain,
       });
 
@@ -66,8 +68,6 @@ module.exports = {
         sql: sql,
         connection: dbMain,
       });
-
-      console.log(result);
 
       const salesArray = Array.from({ length: 12 }, (_, monthIndex) => {
         const monthData = result.find(
