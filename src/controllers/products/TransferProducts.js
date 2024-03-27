@@ -7,16 +7,18 @@ module.exports = async function transferProducts(req, res) {
 
     const updateQueries = [];
     const updateValues = [];
+    const company_id = 0;
 
     for (const id of ids) {
       const updateQuery = `
         UPDATE products 
         SET location_id = ?
         WHERE id = ?
+        AND company_id = ?
       `;
 
       updateQueries.push(updateQuery);
-      updateValues.push([location, id]);
+      updateValues.push([location, id, company_id]);
     }
 
     await executeMultiQuery({

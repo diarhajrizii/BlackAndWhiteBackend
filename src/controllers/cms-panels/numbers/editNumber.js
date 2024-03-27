@@ -3,12 +3,14 @@ const { update } = require("../../../services/db.service");
 
 module.exports = async function editNumber(req, res) {
   try {
-    const { id, number } = req.body;
+    const { id, number, type } = req.body;
+    const company_id = 0;
+
     const params = { number, type };
     await update({
       table_name: "numbers",
       params,
-      where: { id },
+      where: { id, company_id },
       connection: dbMain,
     });
 

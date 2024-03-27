@@ -6,6 +6,7 @@ module.exports = async function recordAdministrationSale(req, res) {
   try {
     // TODO DO THIS WITH TRANSACTIONS
     const { articleId, price: selling_price } = req.body;
+    const company_id = 0;
 
     if (!articleId) throw { message: "Article ID is missing!" };
     if (!selling_price) throw { message: "Price is missing!" };
@@ -16,12 +17,15 @@ module.exports = async function recordAdministrationSale(req, res) {
         quantity = quantity - 1, 
         sales_quantity = sales_quantity + 1, 
         total_sales = total_sales + ? 
-      WHERE id = ?
+      WHERE
+         id = ?
+      AND 
+        company_id = ?
     `;
 
     const { data: updateResult } = await query({
       sql: saleQuery,
-      params: [selling_price, articleId],
+      params: [selling_price, articleId, company_id],
       connection: dbMain,
     });
 
@@ -33,7 +37,12 @@ module.exports = async function recordAdministrationSale(req, res) {
 
     const saleInsertID = await insert({
       table_name: "administration_sales",
-      params: { article_id: articleId, selling_price, sale_date: createdAt },
+      params: {
+        article_id: articleId,
+        selling_price,
+        sale_date: createdAt,
+        company_id,
+      },
       connection: dbMain,
     });
 

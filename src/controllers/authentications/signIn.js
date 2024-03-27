@@ -22,15 +22,17 @@ module.exports = async function signIn(req, res) {
       throw { message: "Invalid email or password" };
     }
 
+    const { password: userPassword, id, company_id } = user;
+
     // Compare passwords
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.compare(password, userPassword);
 
     if (!passwordMatch) {
       throw { message: "Invalid email or password" };
     }
 
     // Create JWT token
-    const token = jwt.sign({ id: user.id }, secretKey, {
+    const token = jwt.sign({ id, company_id }, secretKey, {
       expiresIn: "1h",
     });
 

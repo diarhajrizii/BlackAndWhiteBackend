@@ -6,13 +6,13 @@ module.exports = {
   async getTransactions(req, res) {
     try {
       const date = req.query.date;
-
+      const company_id = 0;
       const dateFilter = date ? `AND DATE(T.date) = ?` : ``;
       const sql = `
         SELECT 
           T.type, 
           T.transaction_type, 
-          T.price AS sale_price , 
+          T.price AS sale_price, 
           T.product_id, 
           T.payment_type, 
           T.id, 
@@ -42,13 +42,12 @@ module.exports = {
         LEFT JOIN brands B ON P.brand_id = B.id
         LEFT JOIN product_specific_types PT ON P.type_id = PT.id
         WHERE T.transaction_type = "income"
-        AND company_id = ?
-        ${dateFilter}
-        `;
+        AND T.company_id = ?
+        ${dateFilter}`;
 
       const transactions = await query({
         sql,
-        params: [0, date],
+        params: [company_id, date],
         connection: dbMain,
       });
 

@@ -12,6 +12,7 @@ const cmsPanelsRoutes = require("./src/routes/cms-panels/cmsPanels.routes");
 const transactionsRoutes = require("./src/routes/transactions/transactions.routes");
 const administrationRoutes = require("./src/routes/administrations/administration.routes");
 const { auth } = require("./src/controllers/middleware/auth.middelware");
+// const myLogger = require("./src/controllers/middleware/myLogger");
 
 const port = process.env.PORT || 3005;
 
@@ -45,6 +46,8 @@ app.use(
 
 app.use(bodyParser.json({ limit: "100mb", extended: true }));
 
+// app.use(myLogger);
+
 const constantApi = "/api/v1";
 app.use(`${constantApi}/products`, productsRoutes);
 app.use(`${constantApi}/panels`, cmsPanelsRoutes);
@@ -53,7 +56,6 @@ app.use(`${constantApi}/administration`, administrationRoutes);
 app.use(`${constantApi}/authentication`, authenticationRoutes);
 
 app.get(`${constantApi}/verify/token`, auth, (req, res) => {
-  console.log({ isValid: req.isValid });
   res.json({ isValid: req.isValid, user: req.user });
 });
 

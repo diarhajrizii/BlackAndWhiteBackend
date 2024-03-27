@@ -19,14 +19,15 @@ module.exports = async function addProducts(req, res) {
 
     const queries = [];
     const values = [];
+    const company_id = 0;
     let productsQuantity = 0;
 
     if (productType === "accessories") {
       // Insert accessories with a single size
       const barcode = `${code}-${brand}-${name}`;
       const insertProductQuery = `
-        INSERT INTO products (code, brand_id, type_id, color_id, price, import_price, number, barcode, date, type, location_id, name, quantity)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, 1, ?, ?)
+        INSERT INTO products (code, brand_id, type_id, color_id, price, import_price, number, barcode, date, type, location_id, name, quantity, company_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, 1, ?, ?, ?)
       `;
       queries.push(insertProductQuery);
       values.push([
@@ -41,6 +42,7 @@ module.exports = async function addProducts(req, res) {
         productType,
         name,
         quantity,
+        company_id,
       ]);
 
       productsQuantity += quantity;
@@ -52,8 +54,8 @@ module.exports = async function addProducts(req, res) {
         for (let i = 0; i < quantity; i++) {
           const barcode = `${code}-${brand}-${size}-${color}`;
           const insertProductQuery = `
-            INSERT INTO products (code, brand_id, type_id, color_id, price, import_price, number, barcode, date, type, location_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, 1)
+            INSERT INTO products (code, brand_id, type_id, color_id, price, import_price, number, barcode, date, type, location_id, company_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?)
           `;
           queries.push(insertProductQuery);
           values.push([
@@ -66,6 +68,8 @@ module.exports = async function addProducts(req, res) {
             size,
             barcode,
             productType,
+            1,
+            company_id,
           ]);
           const currentDate = new Date()
             .toISOString()
@@ -73,8 +77,8 @@ module.exports = async function addProducts(req, res) {
             .replace("T", " ");
 
           const insertQuery = `
-            INSERT INTO transactions (type, product_id, date, price, transaction_type, product_type)
-            VALUES (?, LAST_INSERT_ID(), ?, ?, ?, ?)
+            INSERT INTO transactions (type, product_id, date, price, transaction_type, product_type, company_id)
+            VALUES (?, LAST_INSERT_ID(), ?, ?, ?, ?, ?)
           `;
           const insertValue = [
             "buy",
@@ -82,6 +86,7 @@ module.exports = async function addProducts(req, res) {
             importPrice,
             "outcome",
             productType,
+            company_id,
           ];
 
           queries.push(insertQuery);

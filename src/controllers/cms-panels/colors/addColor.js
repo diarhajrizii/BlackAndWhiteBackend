@@ -4,12 +4,14 @@ const { insert } = require("../../../services/db.service");
 module.exports = async function addColor(req, res) {
   try {
     const { colorName, albanianName, englishName, turkishName } = req.body; // Assuming colorName, albanian, english, turkish are sent in the request body
+    const company_id = 0;
 
     const params = {
       name: colorName,
       sq: albanianName,
       en: englishName,
       tr: turkishName,
+      company_id,
     };
 
     const insertID = await insert({

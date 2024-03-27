@@ -4,8 +4,9 @@ const { insert } = require("../../../services/db.service");
 module.exports = async function addBrand(req, res) {
   try {
     const { brandName, produced, type } = req.body;
+    const company_id = 0;
 
-    const params = { name: brandName, produced, type };
+    const params = { name: brandName, produced, type, company_id };
 
     const insertID = await insert({
       table_name: "brands",

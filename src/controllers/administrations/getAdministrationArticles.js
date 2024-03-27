@@ -5,13 +5,13 @@ const { query } = require("../../services/db.service");
 
 module.exports = async function getArticles(req, res) {
   try {
-    console.log(req.query);
     const { type } = req.query;
+    const company_id = 0;
     const columns =
       type === "articles" ? "article_id, name, quantity" : " name, quantity";
     const { data: articles } = await query({
-      sql: `SELECT id, ${columns} FROM administration_articles`,
-      params: [],
+      sql: `SELECT id, ${columns} FROM administration_articles WHERE company_id = ?;`,
+      params: [company_id],
       connection: dbMain,
     });
     return successfulReturn(

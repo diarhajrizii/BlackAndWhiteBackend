@@ -5,12 +5,14 @@ module.exports = async function addArticle(req, res) {
   insert;
   try {
     const { name, article_id } = req.body;
+    const company_id = 0;
 
     const insertID = await insert({
       table_name: "administration_articles",
       params: {
         name,
         article_id,
+        company_id,
       },
       connection: dbMain,
     });

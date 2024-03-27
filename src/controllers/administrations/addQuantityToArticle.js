@@ -4,10 +4,11 @@ const { query } = require("../../services/db.service");
 module.exports = async function addQuantityToArticle(req, res) {
   try {
     const { article_id, added_quantity } = req.body;
+    const company_id = 0;
 
     const { data: updateResult } = await query({
-      sql: `UPDATE administration_articles SET quantity = quantity + ? WHERE id = ?`,
-      params: [added_quantity, article_id],
+      sql: `UPDATE administration_articles SET quantity = quantity + ? WHERE id = ? AND company_id = ?`,
+      params: [added_quantity, article_id, company_id],
       connection: dbMain,
     });
 

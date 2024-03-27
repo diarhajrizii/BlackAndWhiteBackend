@@ -5,6 +5,7 @@ module.exports = async function editAdministrationArticles(req, res) {
   try {
     const { id } = req.params;
     const { name, article_id } = req.body;
+    const company_id = 0;
 
     // Validate Parameters
     if (!name) throw { message: "Name is missing!" };
@@ -16,8 +17,9 @@ module.exports = async function editAdministrationArticles(req, res) {
         UPDATE administration_articles
         SET name = ?, article_id = ?
         WHERE id = ?
+        AND company_id = ?
       `,
-      params: [name, article_id, id],
+      params: [name, article_id, id, company_id],
       connection: dbMain,
     });
     console.log();
