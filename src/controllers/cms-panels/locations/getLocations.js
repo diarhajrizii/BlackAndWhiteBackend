@@ -9,7 +9,7 @@ module.exports = async function getLocations(req, res) {
       FROM    locations
       WHERE   company_id = ?; 
     `;
-    const locations = await query({
+    const { data: locations } = await query({
       sql,
       params: [company_id],
       connection: dbMain,

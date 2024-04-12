@@ -16,7 +16,13 @@ module.exports = async function getYearsSalesTransactions(req, res) {
       years.map(async (year) => {
         try {
           const salesArray = await fetchYearlyTotalSales(year, type);
-          return { year, salesArray };
+
+          const totalSales = salesArray.reduce(
+            (accumulator, currentValue) => accumulator + currentValue,
+            0
+          );
+
+          return { year, salesArray, totalSales };
         } catch (error) {
           console.error(`Error fetching sales for ${year}:`, error);
           return { year, salesArray: Array.from({ length: 12 }, () => 0) };

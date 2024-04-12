@@ -3,6 +3,7 @@ const { query } = require("../../../services/db.service");
 
 module.exports = async function getBrands(req, res) {
   const { type } = req.query;
+
   const company_id = 0;
   const filterQuery = type ? `AND type = "${type}"` : "";
   try {
@@ -14,7 +15,7 @@ module.exports = async function getBrands(req, res) {
       ${filterQuery}
       ORDER BY  type ASC, name DESC
     `;
-    const brands = await query({
+    const { data: brands } = await query({
       sql,
       params: [company_id],
       connection: dbMain,

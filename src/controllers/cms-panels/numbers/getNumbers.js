@@ -14,7 +14,7 @@ module.exports = async function getNumbers(req, res) {
       ${filterQuery}
       ORDER BY  type DESC, number ASC
       `;
-    const numbers = await query({
+    const { data: numbers } = await query({
       sql,
       params: [company_id],
       connection: dbMain,

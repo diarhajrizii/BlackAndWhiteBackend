@@ -15,7 +15,7 @@ module.exports = async function getTypes(req, res) {
       ${filterQuery}
       ORDER BY  type ASC, name ASC
       `;
-    const types = await query({
+    const { data: types } = await query({
       sql,
       params: [company_id],
       connection: dbMain,

@@ -15,7 +15,7 @@ module.exports = async function getColors(req, res) {
               colors 
       WHERE 
               company_id = ?`;
-    const colors = await query({
+    const { data: colors } = await query({
       sql,
       params: [company_id],
       connection: dbMain,
