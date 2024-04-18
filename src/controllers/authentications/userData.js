@@ -25,7 +25,6 @@ module.exports = async function userData(req, res) {
     if (!user) {
       throw { message: "User doesn't exist" };
     }
-
     return successfulReturn({ data: user }, res);
   } catch (error) {
     console.error(error);
