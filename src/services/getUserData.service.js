@@ -1,49 +1,45 @@
 const { query } = require("./db.service");
-const jwt_decode = require("jwt-decode");
-const { decryptTextV2 } = require("../utils/encryptData");
-const getMessageCodesByCodes = require("../utils/getMessageCodesByCode");
+const jwt_decode = require("jsonwebtoken").decode;
 
 module.exports = {
   async getUserData(vars) {
     try {
-      let JWTtoken = "";
+      let JWToken = "";
       if (vars?.authorization || vars?.Authorization || vars?.host) {
         const { authorization, Authorization } = vars;
         const accessToken = Authorization || authorization;
+
         if (!accessToken) {
-          throw { message: await getMessageCodesByCodes(2212) };
+          throw { message: "Access Token is missing!" };
         }
+
         let auth =
           accessToken.indexOf(" ") > -1
             ? accessToken.split(" ")[1]
             : accessToken;
-        JWTtoken = auth;
+        JWToken = auth;
       } else {
-        JWTtoken = vars;
+        throw { message: "Authorization header is missing!" }; // Handle case where authorization header is not defined
       }
 
-      if (!JWTtoken) throw { message: "No vars found" };
+      if (!JWToken) throw { message: "No vars found" };
 
-      const { sub } = jwt_decode(JWTtoken);
+      const { id, company_id } = jwt_decode(JWToken);
 
-      const result = await query({
-        connection: dbCMS,
-        sql: "SELECT * FROM cms_users WHERE sub_id = ?",
-        params: [sub],
+      const { data: user } = await query({
+        connection: dbMain,
+        sql: "SELECT * FROM users WHERE id = ? AND company_id = ?",
+        params: [id, company_id],
       });
 
-      if (result.status) {
-        let userData = result.data;
-        if (!userData || userData.length == 0) {
-          throw { error: "No user data found" };
-        }
-
-        userData = await decryptTextV2(userData);
-        return userData[0];
+      if (!user || user.length == 0) {
+        throw { error: "No user data found" };
       }
+
+      return user[0];
     } catch (e) {
-      console.log(e);
-      return e.message;
+      console.error("Error in getUserData function:", e);
+      throw e; // Re-throw the error to be caught by the caller
     }
   },
 };

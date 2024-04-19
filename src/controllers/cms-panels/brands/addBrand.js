@@ -1,13 +1,15 @@
 const { successfulReturn, errorReturn } = require("../../../utils/response");
-const { insertv2 } = require("../../../services/db.service");
+const { insert } = require("../../../services/db.service");
 
 module.exports = async function addBrand(req, res) {
   try {
-    const { brandName, produced } = req.body;
-    const params = { name: brandName, produced };
+    const { brandName, produced, type } = req.body;
+    const company_id = 0;
 
-    const insertID = await insertv2({
-      table: "brands",
+    const params = { name: brandName, produced, type, company_id };
+
+    const insertID = await insert({
+      table_name: "brands",
       params,
       connection: dbMain,
     });

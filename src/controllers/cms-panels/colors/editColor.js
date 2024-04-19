@@ -1,11 +1,10 @@
 const { successfulReturn, errorReturn } = require("../../../utils/response");
-const { updateV2 } = require("../../../services/db.service");
+const { update } = require("../../../services/db.service");
 
 module.exports = async function editColor(req, res) {
   try {
-    console.log(req.body);
     const { id, colorName, albanianName, englishName, turkishName } = req.body;
-
+    const company_id = 0;
     const params = {
       name: colorName,
       sq: albanianName,
@@ -13,10 +12,10 @@ module.exports = async function editColor(req, res) {
       tr: turkishName,
     };
 
-    await updateV2({
+    await update({
       table_name: "colors",
       params,
-      where: { id },
+      where: { id, company_id },
       connection: dbMain,
     });
 

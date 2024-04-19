@@ -1,11 +1,6 @@
-const moment = require("moment");
 const { query } = require("../services/db.service");
-const {
-  reportTypes,
-  reportTypeFilters,
-  queriesToMainDB,
-  queriesToGS,
-} = require("../constants/reportTypes");
+const getSQLQuery = require("./getSQLQuery.js");
+
 // Get IP from request header
 function getIP(req) {
   return (
@@ -24,6 +19,22 @@ function getDevice(req) {
 // get Current Date Time
 function getCurrentDateTime() {
   return moment().format("YYYY-MM-DD HH:mm:ss");
+}
+function getNewDate() {
+  return new Date().toISOString().slice(0, 19).replace("T", " ");
+}
+
+const formatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/New_York", // Set your desired timezone
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+});
+function currentTimeZone() {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
 
 // Get Database connection
@@ -176,102 +187,10 @@ async function getTestUsersIds({ dbCMS }) {
   }
 }
 
-function setSportName(sport_id) {
-  const sportMap = {
-    17: "American Football",
-    2: "Australian Rules",
-    271554: "Badminton",
-    3: "Baseball",
-    4: "Basketball",
-    7950337: "Beach Volleyball",
-    6: "Cricket",
-    8: "Darts",
-    10915624: "eSports",
-    10: "Football",
-    491393: "Futsal",
-    99614: "Handball",
-    208627: "Hockey",
-    15: "Ice Hockey",
-    300115: "Martial Arts/UFC",
-    16: "Motor Sport",
-    73743: "Rugby League",
-    73744: "Rugby Union",
-    22: "Snooker",
-    269467: "Table Tennis",
-    24: "Tennis",
-    91189: "Volleyball",
-    11205863: "Basketball 3x3",
-    276032: "Water Polo",
-    11205866: "Virtual Horse Racing",
-    11205868: "Virtual Greyhound Racing",
-    11205864: "Virtual Football",
-    437727: "Squash",
-    6463041: "Hurling",
-    6463040: "Gaelic Football",
-    8554: "Bowls",
-    7: "Cycling",
-    12: "Golf",
-    5: "Boxing",
-  };
-
-  return sportMap[sport_id];
-}
-
-function setSportNameBySlug(sportNames, slug) {
-  const sportMap = {
-    esport: "eSports",
-    tennis: "Tennis",
-    cricket: "Cricket",
-    basketball: "Basketball",
-    tabletennis: "Table Tennis",
-    icehockey: "Ice Hockey",
-    futsal: "Futsal",
-    football: "American Football",
-    handball: "Handball",
-    volleyball: "Volleyball",
-    baseball: "Baseball",
-    rugby: "Rugby League",
-    motorsport: "Motor Sport",
-    rugbyunion: "Rugby Union",
-    snooker: "Snooker",
-    hockey: "Hockey",
-    darts: "Darts",
-    martialarts: "Martial Arts/UFC",
-    beachvolleyball: "Beach Volleyball",
-    badminton: "Badminton",
-    australianrules: "Australian Rules",
-    soccer: "Football",
-    basketball3x3: "Basketball 3x3",
-    bowls: "Bowls",
-    boxing: "Boxing",
-    cycling: "Cycling",
-    gaelicfootball: "Gaelic Football",
-    golf: "Golf",
-    hurling: "Hurling",
-    squash: "Squash",
-    virtualfootball: "Virtual Football",
-    virtualgreyhoundfootball: "Virtual Greyhound Racing",
-    virtualhorseracing: "Virtual Horse Racing",
-    waterpolo: "Water Polo",
-    greyhoundracing: "Greyhound Racing",
-    festive: "Festive",
-    horseracing: "Horse Racing",
-    test: "Test Sport",
-  };
-
-  for (let i = 0; i < slug.length; i++) {
-    const id = slug[i].trim();
-    if (sportMap.hasOwnProperty(id)) {
-      sportNames.push(sportMap[id]);
-    }
-  }
-
-  return sportNames;
-}
-
 function getUnixDateTimeForDb(value) {
   return moment(value).utc().format("YYYY-MM-DD HH:mm:ss");
 }
+
 function returnUniqueArray(arr) {
   var temp = {};
   var retArray = [];
@@ -283,268 +202,24 @@ function returnUniqueArray(arr) {
   }
   return retArray;
 }
+
 function arrayToObj(arr, id, name) {
-  var obj = {};
-  var id = id;
-  var name = name;
-  for (var x = 0; x < arr.length; x++) {
-    var row = arr[x];
+  const obj = {};
+  for (let i = 0; i < arr.length; i++) {
+    const row = arr[i];
     obj[row[id]] = row[name];
   }
   return obj;
 }
+
 const getCurrentDateTimeDatabase = () => {
   return moment.utc().format("YYYY-MM-DD HH:mm:ss");
 };
 
-const playerNameMarketsIds = [
-  12, 13, 14, 42, 7100, 7121, 7739, 10504, 10523, 10989,
-];
-
-const slugs = [
-  "americanfootball",
-  "australianrules",
-  "badminton",
-  "baseball",
-  "basketball",
-  "beachvolleyball",
-  "cricket",
-  "darts",
-  "esport",
-  "soccer",
-  "futsal",
-  "handball",
-  "hockey",
-  "icehockey",
-  "martialarts",
-  "motorsport",
-  "rugby",
-  "rugbyunion",
-  "snooker",
-  "tabletennis",
-  "tennis",
-  "volleyball",
-  "basketball3x3",
-  "waterpolo",
-  "virtualhorseracing",
-  "virtualgreyhoundfootball",
-  "virtualfootball",
-  "squash",
-  "hurling",
-  "gaelicfootball",
-  "bowls",
-  "cycling",
-  "golf",
-  "boxing",
-];
-
-const setSportIdBySlug = (sport_name) => {
-  const sportIds = {
-    esport: 10915624,
-    tennis: 24,
-    cricket: 6,
-    basketball: 4,
-    tabletennis: 269467,
-    icehockey: 15,
-    futsal: 491393,
-    football: 17,
-    handball: 99614,
-    volleyball: 91189,
-    baseball: 3,
-    rugby: 73743,
-    motorsport: 16,
-    rugbyunion: 73744,
-    snooker: 22,
-    hockey: 208627,
-    darts: 8,
-    martialarts: 300115,
-    beachvolleyball: 7950337,
-    badminton: 271554,
-    australianrules: 2,
-    soccer: 10,
-    basketball3x3: 11205863,
-    bowls: 8554,
-    boxing: 5,
-    cycling: 7,
-    gaelicfootball: 6463040,
-    golf: 12,
-    hurling: 6463041,
-    squash: 437727,
-    virtualfootball: 11205864,
-    virtualgreyhoundfootball: 11205868,
-    virtualhorseracing: 11205866,
-    waterpolo: 276032,
-  };
-
-  return sportIds[sport_name] || "";
-};
-
-const setSportSlugById = (sport_id) => {
-  const sportData = {
-    17: {
-      name: "American Football",
-      slug: "americanfootball",
-    },
-    2: {
-      name: "Australian Rules",
-      slug: "australianrules",
-    },
-    271554: {
-      name: "Badminton",
-      slug: "badminton",
-    },
-    3: {
-      name: "Baseball",
-      slug: "baseball",
-    },
-    4: {
-      name: "Basketball",
-      slug: "basketball",
-    },
-    7950337: {
-      name: "Beach Volleyball",
-      slug: "beachvolleyball",
-    },
-    6: {
-      name: "Cricket",
-      slug: "cricket",
-    },
-    8: {
-      name: "Darts",
-      slug: "darts",
-    },
-    10915624: {
-      name: "eSports",
-      slug: "esport",
-    },
-    10: {
-      name: "Football",
-      slug: "soccer",
-    },
-    491393: {
-      name: "Futsal",
-      slug: "futsal",
-    },
-    99614: {
-      name: "Handball",
-      slug: "handball",
-    },
-    208627: {
-      name: "Hockey",
-      slug: "hockey",
-    },
-    15: {
-      name: "Ice Hockey",
-      slug: "icehockey",
-    },
-    300115: {
-      name: "Martial Arts/UFC",
-      slug: "martialarts",
-    },
-    16: {
-      name: "Motor Sport",
-      slug: "motorsport",
-    },
-    73743: {
-      name: "Rugby League",
-      slug: "rugby",
-    },
-    73744: {
-      name: "Rugby Union",
-      slug: "rugbyunion",
-    },
-    22: {
-      name: "Snooker",
-      slug: "snooker",
-    },
-    269467: {
-      name: "Table Tennis",
-      slug: "tabletennis",
-    },
-    24: {
-      name: "Tennis",
-      slug: "tennis",
-    },
-    91189: {
-      name: "Volleyball",
-      slug: "volleyball",
-    },
-    11205863: {
-      name: "Basketball 3x3",
-      slug: "basketball3x3",
-    },
-    276032: {
-      name: "Water Polo",
-      slug: "waterpolo",
-    },
-    11205866: {
-      name: "Virtual Horse Racing",
-      slug: "virtualhorseracing",
-    },
-    11205868: {
-      name: "Virtual Greyhound Racing",
-      slug: "virtualgreyhoundfootball",
-    },
-    11205864: {
-      name: "Virtual Football",
-      slug: "virtualfootball",
-    },
-    437727: {
-      name: "Squash",
-      slug: "squash",
-    },
-    6463041: {
-      name: "Hurling",
-      slug: "hurling",
-    },
-    6463040: {
-      name: "Gaelic Football",
-      slug: "gaelicfootball",
-    },
-    8554: {
-      name: "Bowls",
-      slug: "bowls",
-    },
-    7: {
-      name: "Cycling",
-      slug: "cycling",
-    },
-    12: {
-      name: "Golf",
-      slug: "golf",
-    },
-    5: {
-      name: "Boxing",
-      slug: "boxing",
-    },
-  };
-
-  return sportData[sport_id] || { name: "", slug: "" };
-};
-
-function checkReportType(reportType) {
-  return reportTypes.has(reportType);
-}
-
-function checkAvailableFilters(reportType, filters) {
-  const availableFilters = reportTypeFilters.get(reportType);
-  if (!availableFilters) return true; //return true since we don't have any filters for this report type
-  return filters.every((filter) => availableFilters.includes(filter));
-}
-
-function selectConnection(reportType) {
-  if (queriesToMainDB.includes(reportType)) {
-    return dbMain;
-  }
-  if (queriesToGS.includes(reportType)) {
-    return dbGS;
-  }
-  return dbCMS;
-}
-
 function isObjectEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
+
 function getS3Folder(type) {
   switch (type) {
     case "sport":
@@ -554,22 +229,6 @@ function getS3Folder(type) {
     default:
       return process.env.AWS_S3_MEDIA;
   }
-}
-
-async function getFileNames(id) {
-  const fileNamesArray = await Promise.all(
-    id.map(async (mediaId) => {
-      const {
-        data: [{ filename }],
-      } = await query({
-        connection: dbCMS,
-        sql: `SELECT filename FROM cms_media_library WHERE id = ?`,
-        params: [mediaId],
-      });
-      return filename;
-    })
-  );
-  return fileNamesArray;
 }
 
 function capitalizeFirstLetter(string) {
@@ -593,27 +252,6 @@ function nullToEmpty(obj) {
   return obj;
 }
 
-// function addDecimalToNumber(num) {}
-
-function kycStatusTranslate(string) {
-  switch (string) {
-    case "verified":
-      return "Verified";
-
-    case "inited":
-      return "Started";
-
-    case "pending":
-      return "Pending";
-
-    case "rejected":
-      return "Rejected";
-
-    default:
-      return "Not Started";
-  }
-}
-
 function generateRandomPasswordString(length) {
   var result = "";
   var characters =
@@ -625,35 +263,134 @@ function generateRandomPasswordString(length) {
   return result;
 }
 
+// Check if user exists function
+async function checkIfUserExists(email) {
+  const sql = "SELECT * FROM users WHERE email = ?";
+  const [user] = await query({
+    sql,
+    params: [email],
+    connection: dbMain,
+  });
+  return !!user;
+}
+
+// Regular expression for email validation
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+const fetchYearlyTotalSalesFromMonthlyTable = async (year) => {
+  const sql = `
+    SELECT CAST(TotalSales AS DECIMAL(10,2)) AS TotalSales
+    FROM MonthlySales
+    WHERE Year = ${year}
+  `;
+
+  const { data } = await query({
+    sql,
+    params: [],
+    connection: dbMain,
+  });
+
+  return Array.isArray(data)
+    ? data.map((result) => parseFloat(result.TotalSales))
+    : [];
+};
+function getQuantitySoldArray(salesArray) {
+  const quantityArray = salesArray.map((monthData) =>
+    parseInt(monthData.QuantitySold || 0)
+  );
+
+  return quantityArray;
+}
+
+function getTotalSalesArray(array) {
+  const salesArray = Array.from({ length: 12 }, (_, monthIndex) => {
+    const monthData = array.find(
+      (row) => row.Month === (monthIndex + 1).toString().padStart(2, "0")
+    );
+
+    // Use a conditional statement to set the value based on the monthData
+    return monthData ? parseFloat(monthData.TotalSales) : 0;
+  });
+  return salesArray;
+}
+function getCategoryCode(type) {
+  let categoryCode;
+  switch (type) {
+    case "shoes":
+      categoryCode = [1003];
+      break;
+    case "textile":
+      categoryCode = [1004];
+      break;
+    case "accessories":
+      categoryCode = [1005];
+      break;
+    case "quantity":
+      categoryCode = [1006];
+      break;
+    case "onlinePrices":
+      categoryCode = [1007];
+      break;
+    case "bankPrices":
+      categoryCode = [1008];
+      break;
+    default:
+      categoryCode = [1002];
+      break;
+  }
+  return categoryCode;
+}
+const fetchYearlyTotalSales = async (years, type) => {
+  try {
+    const categoryCode = getCategoryCode(type);
+    const sql = getSQLQuery(categoryCode, years);
+
+    const { data: result } = await query({
+      sql,
+      connection: dbMain,
+      params: [],
+    });
+
+    const resultArray =
+      type === "quantity"
+        ? getQuantitySoldArray(result)
+        : getTotalSalesArray(result);
+    return resultArray;
+  } catch (error) {
+    console.error(error);
+    return Array.from({ length: 12 }, () => 0);
+  }
+};
+
 module.exports = {
+  checkIfUserExists,
+  validateEmail,
   getIP,
   getDevice,
   getCurrentDateTime,
+  getNewDate,
   getConnection,
   activityLogs,
   getFileParams,
   getTestUsersIds,
-  setSportName,
-  setSportNameBySlug,
   generateRandomString,
   getUnixDateTimeForDb,
   returnUniqueArray,
   arrayToObj,
-  playerNameMarketsIds,
-  setSportIdBySlug,
   getCurrentDateTimeDatabase,
-  setSportSlugById,
-  checkReportType,
-  checkAvailableFilters,
-  selectConnection,
   generateRandomNumber,
   isObjectEmpty,
   generateUID,
   getS3Folder,
-  slugs,
-  getFileNames,
   capitalizeFirstLetter,
   nullToEmpty,
-  kycStatusTranslate,
   generateRandomPasswordString,
+  fetchYearlyTotalSales,
+  currentTimeZone,
+  formatter,
+  fetchYearlyTotalSalesFromMonthlyTable,
+  getTotalSalesArray,
 };

@@ -1,19 +1,21 @@
 const { successfulReturn, errorReturn } = require("../../../utils/response");
-const { query, insertv2 } = require("../../../services/db.service");
+const { insert } = require("../../../services/db.service");
 
 module.exports = async function addColor(req, res) {
   try {
     const { colorName, albanianName, englishName, turkishName } = req.body; // Assuming colorName, albanian, english, turkish are sent in the request body
+    const company_id = 0;
 
     const params = {
       name: colorName,
       sq: albanianName,
       en: englishName,
       tr: turkishName,
+      company_id,
     };
 
-    const insertID = await insertv2({
-      table: "colors",
+    const insertID = await insert({
+      table_name: "colors",
       params,
       connection: dbMain,
     });

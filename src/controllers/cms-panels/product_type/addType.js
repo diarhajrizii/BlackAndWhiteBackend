@@ -1,15 +1,15 @@
 const { successfulReturn, errorReturn } = require("../../../utils/response");
-const { insertv2 } = require("../../../services/db.service");
+const { insert } = require("../../../services/db.service");
 
 module.exports = async function addType(req, res) {
   try {
-    const { type } = req.body; // Assuming number is sent in the request body
-
+    const { specificType, type } = req.body; // Assuming number is sent in the request body
+    const company_id = 0;
     // Perform validation checks on number if necessary
 
-    const insertID = await insertv2({
-      table: "product_type",
-      params: { name: type },
+    const insertID = await insert({
+      table_name: "product_specific_types",
+      params: { name: specificType, type, company_id },
       connection: dbMain,
     });
 
