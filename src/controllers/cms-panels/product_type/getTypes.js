@@ -13,7 +13,7 @@ module.exports = async function getTypes(req, res) {
       FROM      product_specific_types
       WHERE company_id = ?
       ${filterQuery}
-      ORDER BY  type ASC, name ASC
+      -- ORDER BY  type ASC, name ASC
       `;
     const { data: types } = await query({
       sql,

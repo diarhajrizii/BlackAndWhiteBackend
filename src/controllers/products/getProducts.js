@@ -46,6 +46,8 @@ module.exports = async function getProducts(req, res) {
       AND 
           p.sold = 0 
       AND 
+          p.deleted = 0
+      AND 
           (P.type <> "accessories" OR P.quantity <> 0)
       ${groupByFilter};
     `;

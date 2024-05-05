@@ -33,6 +33,7 @@ const formatter = new Intl.DateTimeFormat("en-US", {
   minute: "2-digit",
   second: "2-digit",
 });
+
 function currentTimeZone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
@@ -365,6 +366,16 @@ const fetchYearlyTotalSales = async (years, type) => {
   }
 };
 
+const validateParameters = (params) => {
+  const requiredParams = Object.keys(params);
+
+  for (const param of requiredParams) {
+    if (params[param] === undefined || params[param] === null) {
+      throw new Error(`Missing or invalid parameter: ${param}`);
+    }
+  }
+};
+
 module.exports = {
   checkIfUserExists,
   validateEmail,
@@ -393,4 +404,5 @@ module.exports = {
   formatter,
   fetchYearlyTotalSalesFromMonthlyTable,
   getTotalSalesArray,
+  validateParameters,
 };
