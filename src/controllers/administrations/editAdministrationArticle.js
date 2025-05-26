@@ -22,7 +22,6 @@ module.exports = async function editAdministrationArticles(req, res) {
       params: [name, article_id, id, company_id],
       connection: dbMain,
     });
-    console.log();
     if (updateResult.affectedRows > 0) {
       return successfulReturn({ message: "Article updated successfully" }, res);
     } else {

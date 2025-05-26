@@ -131,9 +131,6 @@ module.exports = {
         // Use a conditional statement to set the value based on the monthData
         return monthData ? parseFloat(monthData.TotalSales) : 0;
       });
-
-      console.log(salesArray);
-
       return successfulReturn({ data: salesArray }, res);
     } catch (error) {
       console.error(error);

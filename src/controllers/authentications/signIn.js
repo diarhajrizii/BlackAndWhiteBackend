@@ -22,7 +22,7 @@ module.exports = async function signIn(req, res) {
       throw { message: "Invalid email or password" };
     }
 
-    const { password: userPassword, id, company_id } = user;
+    const { password: userPassword, id, company_id, role } = user;
 
     // Compare passwords
     const passwordMatch = await bcrypt.compare(password, userPassword);
@@ -32,8 +32,8 @@ module.exports = async function signIn(req, res) {
     }
 
     // Create JWT token
-    const token = jwt.sign({ id, company_id }, secretKey, {
-      expiresIn: "1h",
+    const token = jwt.sign({ id, company_id, role }, secretKey, {
+      expiresIn: "365d", // 1 year
     });
 
     return successfulReturn({ data: token }, res);

@@ -17,72 +17,42 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendEmail = (to, subject, text) => {
+  const name = "Hajriz Hajrizi";
+  const dueDate = "11.12.2025";
+
   const mailOptions = {
     from: EMAIL_USER,
     to,
     subject,
     text,
     html: `
-    <html>
-    <head>
-      <style>
-        /* Mobile styles */
-        @media only screen and (max-width: 600px) {
-          .container {
-            width: 100%;
-            padding: 10px;
-            text-align: center;
-          }
-          img {
-            height: 90px !important;
-            width: 90px !important;
-          }
-        }
-        body {
-          font-family: Arial, sans-serif;
-          background-color: #f4f4f4;
-          color: #333;
-          text-align: center;
-        }
-        .container {
-          max-width: 600px;
-          border: 30px solid black;
-          width: 80%;
-          margin: 0 auto;
-          padding: 20px;
-          background-color: #fff;
-          border-radius: 5px;
-          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-          text-align: center;
-        }
-        img {
-          height: 170px;
-          width: 170px;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="img-container">
-          <img
-            src="https://i.pinimg.com/564x/f2/c3/cd/f2c3cd120df823e9de2c49c8466fbc26.jpg"
-          />
+  <html>
+      <body style="margin:0;padding:0;background-color:#f4f4f4;font-family:'Segoe UI',Arial,sans-serif;">
+        <div style="max-width:600px;margin:0 auto;background:white;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+          <div style="background-color:#000;color:#fff;padding:20px;text-align:center;">
+            <h1 style="margin:0;font-size:24px;">Rent Payment Reminder</h1>
+          </div>
+          <div style="padding:30px;">
+            <p style="font-size:18px;">Hello <strong>${name}</strong>,</p>
+            <p style="font-size:16px;line-height:1.6;">
+              We hope you're doing well! This is a friendly reminder that your rent payment is due by <strong style="color:#d9534f;">${dueDate}</strong>.
+            </p>
+            <p style="font-size:16px;line-height:1.6;">
+              Please ensure your payment is submitted by the deadline to avoid any late fees or service disruptions.
+            </p>
+            <div style="margin:30px 0;text-align:center;">
+              <a href="https://your-store-link.com/payment" target="_blank" style="background-color:#000;color:white;text-decoration:none;padding:12px 25px;border-radius:5px;font-weight:bold;display:inline-block;">
+                Pay Now
+              </a>
+            </div>
+            <p style="font-size:14px;color:#777;">If you've already made the payment, please ignore this message.</p>
+          </div>
+          <div style="background-color:#f9f9f9;padding:20px;text-align:center;font-size:13px;color:#999;">
+            &copy; ${new Date().getFullYear()} Black & White Rentals. All rights reserved.
+          </div>
         </div>
-        <h1>Hello MR. Hajrizi!</h1>
-        <p>
-          You have an outstanding rent payment for your store, which is due by
-          <strong>05.12.2023</strong>. Please ensure the payment is made by the
-          deadline to avoid any inconvenience.
-        </p>
-        <!-- <p>
-          You can add more content, images, links, and apply styles using HTML and
-          CSS.
-        </p> -->
-      </div>
-    </body>
-  </html>
-  
-  
+      </body>
+      </html>
   `,
   };
 

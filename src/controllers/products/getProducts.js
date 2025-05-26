@@ -1,8 +1,10 @@
+const sendEmail = require("../../services/emailSender");
 const { query } = require("../../services/db.service");
 const { successfulReturn, errorReturn } = require("../../utils/response");
 
 module.exports = async function getProducts(req, res) {
   try {
+    // sendEmail("diar@nerdycreative.ch", "Test", "Test Text");
     const type = req.query.type;
     const groupByFilter = type === "sales" ? `GROUP BY P.barcode` : ``;
     const soldFilter = type === "sold" ? "p.sold = 1" : "p.sold = 0";

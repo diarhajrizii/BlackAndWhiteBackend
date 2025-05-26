@@ -3,23 +3,20 @@ const { insert } = require("../../services/db.service");
 
 module.exports = async function addTransaction(req, res) {
   try {
-    console.log(req.body);
-    return false;
-    const { payment_type, description, subType, transaction_type } = req.body;
+    const { payment_type, description, subType, transaction_type, sale_price } =
+      req.body;
     const company_id = 0;
 
     const insertID = await insert({
-      table_name: "transaction",
+      table_name: "transactions",
       params: {
-        type: "",
-        date: "",
+        type: subType,
         payment_type,
         bank_name: "",
-        price: "",
-        transaction_type: "",
+        price: sale_price,
+        transaction_type,
         sale_type: "",
         company_id,
-        transaction_type_id: "",
         description,
       },
       connection: dbMain,
