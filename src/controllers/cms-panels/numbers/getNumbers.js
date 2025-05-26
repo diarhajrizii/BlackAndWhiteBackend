@@ -12,7 +12,7 @@ module.exports = async function getNumbers(req, res) {
       FROM      numbers
       WHERE company_id = ?
       ${filterQuery}
-      ORDER BY  type DESC, number ASC
+      -- ORDER BY  type DESC, number ASC
       `;
     const { data: numbers } = await query({
       sql,
