@@ -3,7 +3,7 @@ const { query } = require("../../../services/db.service");
 
 module.exports = async function getColors(req, res) {
   try {
-    const company_id = 0;
+    const { company_id } = req.user;
     const sql = `
       SELECT 
               id, 

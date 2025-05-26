@@ -5,7 +5,7 @@ module.exports = async function getNumbers(req, res) {
   try {
     const { type } = req.query;
     const filterQuery = type ? `AND type = "${type}"` : "";
-    const company_id = 0;
+    const { company_id } = req.user;
     const sql = `
       SELECT 
                 id, number, type 

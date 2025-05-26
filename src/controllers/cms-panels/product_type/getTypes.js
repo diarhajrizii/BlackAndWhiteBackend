@@ -4,7 +4,7 @@ const { query } = require("../../../services/db.service");
 module.exports = async function getTypes(req, res) {
   try {
     const { type } = req.query;
-    const company_id = 0;
+    const { company_id } = req.user;
     const filterQuery = type ? `AND type = "${type}"` : "";
 
     const sql = `

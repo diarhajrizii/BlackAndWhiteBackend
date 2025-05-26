@@ -4,7 +4,7 @@ const { query } = require("../../services/db.service");
 module.exports = async function addQuantityToArticle(req, res) {
   try {
     const { article_id, added_quantity } = req.body;
-    const company_id = 0;
+    const { company_id } = req.user;
 
     const { data: updateResult } = await query({
       sql: `UPDATE administration_articles SET quantity = quantity + ? WHERE id = ? AND company_id = ?`,

@@ -5,7 +5,7 @@ module.exports = async function editBrands(req, res) {
   try {
     const { id, brandName, produced, type } = req.body;
     const params = { name: brandName, produced, type };
-    const company_id = 0;
+    const { company_id } = req.user;
     await update({
       table_name: "brands",
       params,

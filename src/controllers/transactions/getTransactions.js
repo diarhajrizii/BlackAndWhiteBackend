@@ -6,7 +6,7 @@ module.exports = {
   async getSalesTransactions(req, res) {
     try {
       const date = req.query.date;
-      const company_id = 0;
+      const { company_id } = req.user;
       const dateFilter = date ? `AND DATE(T.date) = ?` : ``;
       const sql = `
         SELECT 
@@ -61,7 +61,7 @@ module.exports = {
   async getTransactions(req, res) {
     try {
       const date = req.query.date;
-      const company_id = 0;
+      const { company_id } = req.user;
       const dateFilter = date ? `AND DATE(T.date) = ?` : ``;
       const sql = `
         SELECT 

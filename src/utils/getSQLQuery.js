@@ -105,9 +105,10 @@ const getSelectQuery = (code, vars = "") => {
           DATE_FORMAT(date, '%m') AS Month,
           SUM(price) AS TotalSales
         FROM transactions
-        WHERE YEAR(date) = ${vars}
+        WHERE YEAR(date) = ${vars.years}
           AND type = 'sale'
           AND transaction_type = 'income'
+          AND company_id = ${vars.company_id}
         GROUP BY Month
       ) T ON MS.Month = T.Month
       LEFT JOIN (
@@ -115,7 +116,8 @@ const getSelectQuery = (code, vars = "") => {
           MONTH(STR_TO_DATE(Month, '%M')) AS Month,
           SUM(TotalSales) AS TotalSales
         FROM monthlySales
-        WHERE Year = ${vars}
+        WHERE Year = ${vars.years}
+        AND company_id = ${vars.company_id}
         GROUP BY Month
       ) MSales ON MS.Month = MSales.Month
       ORDER BY MS.Month;
@@ -144,10 +146,11 @@ const getSelectQuery = (code, vars = "") => {
             DATE_FORMAT(date, '%m') AS Month,
             SUM(price) AS TotalSales
           FROM transactions
-          WHERE YEAR(date) = ${vars}
+          WHERE YEAR(date) = ${vars.years}
             AND type = 'sale'
             AND transaction_type = 'income'
             AND product_type = 'shoes'
+            AND company_id = ${vars.company_id}
           GROUP BY Month
         ) T ON MS.Month = T.Month
         LEFT JOIN (
@@ -155,7 +158,8 @@ const getSelectQuery = (code, vars = "") => {
             MONTH(STR_TO_DATE(Month, '%M')) AS Month,
             SUM(shoesSales) AS TotalSales
           FROM monthlySales
-          WHERE Year = ${vars}
+          WHERE Year = ${vars.years}
+          AND company_id = ${vars.company_id}
           GROUP BY Month
         ) MSales ON MS.Month = MSales.Month
         ORDER BY MS.Month;
@@ -184,10 +188,11 @@ const getSelectQuery = (code, vars = "") => {
             DATE_FORMAT(date, '%m') AS Month,
             SUM(price) AS TotalSales
           FROM transactions
-          WHERE YEAR(date) = ${vars}
+          WHERE YEAR(date) = ${vars.years}
             AND type = 'sale'
             AND transaction_type = 'income'
             AND product_type = 'textile'
+            AND company_id = ${vars.company_id}
           GROUP BY Month
         ) T ON MS.Month = T.Month
         LEFT JOIN (
@@ -195,7 +200,8 @@ const getSelectQuery = (code, vars = "") => {
             MONTH(STR_TO_DATE(Month, '%M')) AS Month,
             SUM(TextileSales) AS TotalSales
           FROM monthlySales
-          WHERE Year = ${vars}
+          WHERE Year = ${vars.years}
+            AND company_id = ${vars.company_id}
           GROUP BY Month
         ) MSales ON MS.Month = MSales.Month
         ORDER BY MS.Month;
@@ -224,10 +230,11 @@ const getSelectQuery = (code, vars = "") => {
               DATE_FORMAT(date, '%m') AS Month,
               SUM(price) AS TotalSales
             FROM transactions
-            WHERE YEAR(date) = ${vars}
+            WHERE YEAR(date) = ${vars.years}
               AND type = 'sale'
               AND transaction_type = 'income'
               AND product_type = 'accessories'
+              AND company_id = ${vars.company_id}
             GROUP BY Month
           ) T ON MS.Month = T.Month
           LEFT JOIN (
@@ -235,7 +242,8 @@ const getSelectQuery = (code, vars = "") => {
               MONTH(STR_TO_DATE(Month, '%M')) AS Month,
               SUM(AccessoriesSales) AS TotalSales
             FROM monthlySales
-            WHERE Year = ${vars}
+            WHERE Year = ${vars.years}
+              AND company_id = ${vars.company_id}
             GROUP BY Month
           ) MSales ON MS.Month = MSales.Month
           ORDER BY MS.Month;
@@ -256,10 +264,12 @@ const getSelectQuery = (code, vars = "") => {
         MonthTable mt
       LEFT JOIN
         transactions t ON MONTH(t.date) = mt.Month
-        AND YEAR(t.date) = 2024
+        AND YEAR(t.date) = 2025
         AND t.type = 'sale'
+        AND company_id = ${vars.company_id}
       WHERE
         mt.Month IS NOT NULL
+        
       GROUP BY
         mt.Month
       ORDER BY
@@ -286,7 +296,7 @@ const getSelectQuery = (code, vars = "") => {
       FROM
           Calendar c
       LEFT JOIN
-          transactions t ON c.Month = DATE_FORMAT(t.date, '%m') AND t.type = 'sale' AND YEAR(t.date) = 2024
+          transactions t ON c.Month = DATE_FORMAT(t.date, '%m') AND t.type = 'sale' AND YEAR(t.date) = 2025 AND company_id = ${vars.company_id}
       GROUP BY
           c.Month
       ORDER BY
@@ -312,7 +322,7 @@ const getSelectQuery = (code, vars = "") => {
       FROM
           Calendar c
       LEFT JOIN
-          transactions t ON c.Month = DATE_FORMAT(t.date, '%m') AND t.type = 'sale' AND YEAR(t.date) = 2024
+          transactions t ON c.Month = DATE_FORMAT(t.date, '%m') AND t.type = 'sale' AND YEAR(t.date) = 2025 AND company_id = ${vars.company_id}
       GROUP BY
           c.Month
       ORDER BY

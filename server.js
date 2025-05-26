@@ -44,11 +44,11 @@ app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 app.use(bodyParser.json({ limit: "100mb", extended: true }));
 
 // Routes
-app.use(`${constantApi}/products`, productsRoutes);
-app.use(`${constantApi}/panels`, cmsPanelsRoutes);
-app.use(`${constantApi}/transactions`, transactionsRoutes);
-app.use(`${constantApi}/administration`, administrationRoutes);
-app.use(`${constantApi}/authentication`, authenticationRoutes);
+app.use(`${constantApi}/products`, auth, productsRoutes);
+app.use(`${constantApi}/panels`, auth, cmsPanelsRoutes);
+app.use(`${constantApi}/transactions`, auth, transactionsRoutes);
+app.use(`${constantApi}/administration`, auth, administrationRoutes);
+app.use(`${constantApi}/authentication`, auth, authenticationRoutes);
 
 app.get(`${constantApi}/verify/token`, auth, (req, res) => {
   res.json({ isValid: req.isValid, user: req.user });

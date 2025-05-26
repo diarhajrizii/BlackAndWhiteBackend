@@ -4,7 +4,7 @@ const { insert } = require("../../../services/db.service");
 module.exports = async function addLocation(req, res) {
   try {
     const { name } = req.body;
-    const company_id = 0;
+    const { company_id } = req.user;
     const insertID = await insert({
       table_name: "locations",
       params: { name, company_id },

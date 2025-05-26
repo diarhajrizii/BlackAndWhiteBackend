@@ -16,10 +16,10 @@ module.exports = async function addProducts(req, res) {
       name, // New property for accessories
       quantity, // New property for accessories
     } = req.body;
+    const { company_id } = req.user;
 
     const queries = [];
     const values = [];
-    const company_id = 0;
     let productsQuantity = 0;
 
     // Helper function to insert product

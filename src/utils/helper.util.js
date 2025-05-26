@@ -344,10 +344,10 @@ function getCategoryCode(type) {
   }
   return categoryCode;
 }
-const fetchYearlyTotalSales = async (years, type) => {
+const fetchYearlyTotalSales = async (years, type, company_id) => {
   try {
     const categoryCode = getCategoryCode(type);
-    const sql = getSQLQuery(categoryCode, years);
+    const sql = getSQLQuery(categoryCode, { years, company_id });
 
     const { data: result } = await query({
       sql,

@@ -4,7 +4,8 @@ const { query } = require("../../../services/db.service");
 module.exports = async function getBrands(req, res) {
   const { type } = req.query;
 
-  const company_id = 0;
+  const { company_id } = req.user;
+
   const filterQuery = type ? `AND type = "${type}"` : "";
   try {
     const sql = `
@@ -20,6 +21,7 @@ module.exports = async function getBrands(req, res) {
       params: [company_id],
       connection: dbMain,
     });
+
     return successfulReturn({ data: brands }, res);
   } catch (error) {
     console.error(error);

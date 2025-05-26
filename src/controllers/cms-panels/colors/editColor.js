@@ -4,7 +4,7 @@ const { update } = require("../../../services/db.service");
 module.exports = async function editColor(req, res) {
   try {
     const { id, colorName, albanianName, englishName, turkishName } = req.body;
-    const company_id = 0;
+    const { company_id } = req.user;
     const params = {
       name: colorName,
       sq: albanianName,

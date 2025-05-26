@@ -4,6 +4,7 @@ const { successfulReturn, errorReturn } = require("../../utils/response");
 module.exports = async function getYearsSalesTransactions(req, res) {
   try {
     const { years, type } = req.body;
+    const { company_id } = req.user;
 
     if (!years || !Array.isArray(years)) {
       return errorReturn({
@@ -15,7 +16,11 @@ module.exports = async function getYearsSalesTransactions(req, res) {
     const yearlyTotalSales = await Promise.all(
       years.map(async (year) => {
         try {
-          const salesArray = await fetchYearlyTotalSales(year, type);
+          const salesArray = await fetchYearlyTotalSales(
+            year,
+            type,
+            company_id
+          );
 
           const totalSales = salesArray.reduce(
             (accumulator, currentValue) => accumulator + currentValue,

@@ -5,8 +5,7 @@ module.exports = async function addTransaction(req, res) {
   try {
     const { payment_type, description, subType, transaction_type, sale_price } =
       req.body;
-    const company_id = 0;
-
+    const { company_id } = req.user;
     const insertID = await insert({
       table_name: "transactions",
       params: {

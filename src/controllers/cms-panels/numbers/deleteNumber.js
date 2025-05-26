@@ -4,7 +4,7 @@ const { deletev2 } = require("../../../services/db.service");
 module.exports = async function deleteNumber(req, res) {
   try {
     const { id } = req.body; // Assuming number is sent in the request body
-    const company_id = 0;
+    const { company_id } = req.user;
     // Perform validation checks on number if necessary
 
     await deletev2({

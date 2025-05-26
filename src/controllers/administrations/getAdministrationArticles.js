@@ -6,7 +6,7 @@ const { query } = require("../../services/db.service");
 module.exports = async function getArticles(req, res) {
   try {
     const { type } = req.query;
-    const company_id = 0;
+    const { company_id } = req.user;
     const columns =
       type === "articles" ? "article_id, name, quantity" : " name, quantity";
     const { data: articles } = await query({

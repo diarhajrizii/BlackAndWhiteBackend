@@ -3,7 +3,7 @@ const { query } = require("../../services/db.service");
 
 module.exports = async function getAdministrationSales(req, res) {
   try {
-    const company_id = 0;
+    const { company_id } = req.user;
     const saleQuery = `
       SELECT 
           S.id, AA.name, S.selling_price, DATE_FORMAT(S.sale_date, '%d-%m-%Y %H:%i:%s') as formatted_sale_date

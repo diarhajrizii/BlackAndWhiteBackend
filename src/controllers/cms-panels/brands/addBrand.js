@@ -7,7 +7,7 @@ module.exports = async function addBrand(req, res) {
     const { brandName, produced, type } = req.body;
     validateParameters({ brandName, produced });
 
-    const company_id = 0;
+    const { company_id } = req.user;
 
     // TODO check type also in front
     const params = {

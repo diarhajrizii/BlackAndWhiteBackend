@@ -5,10 +5,11 @@ const { successfulReturn, errorReturn } = require("../../utils/response");
 module.exports = async function getProducts(req, res) {
   try {
     // sendEmail("diar@nerdycreative.ch", "Test", "Test Text");
-    const type = req.query.type;
+    const { type } = req.query;
+    const { company_id } = req.user;
+
     const groupByFilter = type === "sales" ? `GROUP BY P.barcode` : ``;
     const soldFilter = type === "sold" ? "p.sold = 1" : "p.sold = 0";
-    const company_id = 0;
     const quantityFilter =
       type === "sales"
         ? `COALESCE(MAX(P.quantity), (SELECT COUNT(*) FROM products P2 WHERE P2.barcode = P.barcode AND sold = 0)) AS quantity,`

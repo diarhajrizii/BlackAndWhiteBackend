@@ -4,10 +4,10 @@ const { executeMultiQuery } = require("../../configs/dbConnection");
 module.exports = async function transferProducts(req, res) {
   try {
     const { ids, location } = req.body;
+    const { company_id } = req.user;
 
     const updateQueries = [];
     const updateValues = [];
-    const company_id = 0;
 
     for (const id of ids) {
       const updateQuery = `

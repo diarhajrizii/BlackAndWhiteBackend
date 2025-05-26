@@ -6,7 +6,7 @@ module.exports = async function recordAdministrationSale(req, res) {
   try {
     // TODO DO THIS WITH TRANSACTIONS
     const { articleId, price: selling_price } = req.body;
-    const company_id = 0;
+    const { company_id } = req.user;
 
     if (!articleId) throw { message: "Article ID is missing!" };
     if (!selling_price) throw { message: "Price is missing!" };

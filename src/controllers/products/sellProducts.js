@@ -4,9 +4,9 @@ const { executeMultiQuery } = require("../../configs/dbConnection");
 module.exports = async function sellProducts(req, res) {
   try {
     const salesData = req.body;
+    const { company_id } = req.user;
     const queries = [];
     const values = [];
-    const company_id = 0;
     salesData.forEach((sale) => {
       const currentDate = new Date()
         .toISOString()

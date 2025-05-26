@@ -5,7 +5,7 @@ module.exports = async function editAdministrationArticles(req, res) {
   try {
     const { id } = req.params;
     const { name, article_id } = req.body;
-    const company_id = 0;
+    const { company_id } = req.user;
 
     // Validate Parameters
     if (!name) throw { message: "Name is missing!" };

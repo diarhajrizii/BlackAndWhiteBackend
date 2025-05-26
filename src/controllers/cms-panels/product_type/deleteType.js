@@ -4,7 +4,7 @@ const { deletev2 } = require("../../../services/db.service");
 module.exports = async function deleteType(req, res) {
   try {
     const { id } = req.body;
-    const company_id = 0;
+    const { company_id } = req.user;
     await deletev2({
       query:
         "DELETE FROM product_specific_types WHERE id = ? AND company_id = ?",

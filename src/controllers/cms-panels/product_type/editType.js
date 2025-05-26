@@ -4,7 +4,7 @@ const { update } = require("../../../services/db.service");
 module.exports = async function editType(req, res) {
   try {
     const { id, type, specificType } = req.body;
-    const company_id = 0;
+    const { company_id } = req.user;
 
     const params = { name: specificType, type };
 

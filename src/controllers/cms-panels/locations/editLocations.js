@@ -4,7 +4,7 @@ const { update } = require("../../../services/db.service");
 module.exports = async function editLocation(req, res) {
   try {
     const { id, name } = req.body;
-    const company_id = 0;
+    const { company_id } = req.user;
     const params = { name };
     await update({
       table_name: "locations",
