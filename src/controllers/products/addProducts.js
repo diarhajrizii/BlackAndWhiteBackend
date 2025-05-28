@@ -13,48 +13,46 @@ module.exports = async function addProducts(req, res) {
       importPrice,
       sizes,
       productType,
-      name, // New property for accessories
-      quantity, // New property for accessories
+      name, // For accessories
+      quantity, // For accessories
     } = req.body;
+
     const { company_id } = req.user;
 
     const queries = [];
     const values = [];
-    let productsQuantity = 0;
+    let totalQuantity = 0;
 
-    // Helper function to insert product
+    const now = new Date().toISOString().slice(0, 19).replace("T", " ");
+
     const insertProduct = (productData) => {
-      const insertProductQuery = `
-        INSERT INTO products (code, brand_id, type_id, color_id, price, import_price, number, barcode, date, type, location_id, name, quantity, company_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, 1, ?, ?, ?)
+      const query = `
+        INSERT INTO products (
+          code, brand_id, type_id, color_id, price, import_price,
+          number, barcode, date, type, location_id, name, quantity, company_id
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, 1, ?, ?, ?)
       `;
-      queries.push(insertProductQuery);
+      queries.push(query);
       values.push(productData);
     };
 
-    // Helper function to insert transaction
-    const insertTransaction = (productId) => {
-      const currentDate = new Date()
-        .toISOString()
-        .slice(0, 19)
-        .replace("T", " ");
-      const insertQuery = `
-        INSERT INTO transactions (type, product_id, date, price, transaction_type, product_type, company_id)
-        VALUES (?, LAST_INSERT_ID(), ?, ?, ?, ?, ?)
+    const insertTransaction = () => {
+      const query = `
+        INSERT INTO transactions (
+          type, product_id, date, price, transaction_type, product_type, company_id
+        ) VALUES (?, LAST_INSERT_ID(), ?, ?, ?, ?, ?)
       `;
-      const insertValue = [
+      values.push([
         "buy",
-        currentDate,
+        now,
         importPrice,
         "outcome",
         productType,
         company_id,
-      ];
-      queries.push(insertQuery);
-      values.push(insertValue);
+      ]);
+      queries.push(query);
     };
 
-    // If product is an accessory
     if (productType === "accessories") {
       const barcode = `${code}-${brand}-${name}`;
       const productData = [
@@ -64,7 +62,7 @@ module.exports = async function addProducts(req, res) {
         color,
         stockPrice,
         importPrice,
-        0,
+        0, // No size
         barcode,
         productType,
         name,
@@ -72,13 +70,11 @@ module.exports = async function addProducts(req, res) {
         company_id,
       ];
       insertProduct(productData);
-      productsQuantity += quantity;
+      totalQuantity += quantity;
     } else {
-      // If product is not an accessory (e.g., shoes, textile)
-      for (const sizeObj of sizes) {
-        const { size, quantity: sizeQuantity } = sizeObj;
-        productsQuantity += sizeQuantity;
-        for (let i = 0; i < sizeQuantity; i++) {
+      for (const { size, quantity: sizeQty } of sizes) {
+        totalQuantity += sizeQty;
+        for (let i = 0; i < sizeQty; i++) {
           const barcode = `${code}-${brand}-${size}-${color}`;
           const productData = [
             code,
@@ -90,7 +86,8 @@ module.exports = async function addProducts(req, res) {
             size,
             barcode,
             productType,
-            1,
+            null, // name
+            null, // quantity
             company_id,
           ];
           insertProduct(productData);
@@ -99,20 +96,20 @@ module.exports = async function addProducts(req, res) {
       }
     }
 
-    if (!productsQuantity)
-      throw { message: "Please select a quantity of numbers" };
+    if (!totalQuantity) {
+      throw new Error("Please select a quantity of numbers");
+    }
 
-    // Execute all queries within a transaction
     const result = await executeMultiQuery({
       queries,
       values,
-      dbType: dbMain, // Replace with actual DB type
-      useTransaction: true, // Ensures atomicity
+      dbType: dbMain, // Ensure dbMain is defined in scope
+      useTransaction: true, // Atomic operation
     });
 
     return successfulReturn({ data: addProductsModel({ data: result }) }, res);
   } catch (error) {
-    console.error(error);
+    console.error("Error in addProducts:", error);
     return errorReturn({ e: error, res });
   }
 };

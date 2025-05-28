@@ -250,30 +250,34 @@ const getSelectQuery = (code, vars = "") => {
       `,
     1006: `
       WITH MonthTable AS (
-        SELECT
-          LPAD(MONTH(CURDATE() - INTERVAL a.a MONTH), 2, '0') AS Month
-        FROM
-          (SELECT 0 AS a UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3) AS a
-        ORDER BY
-          a.a
+        SELECT '01' AS Month UNION ALL
+        SELECT '02' UNION ALL
+        SELECT '03' UNION ALL
+        SELECT '04' UNION ALL
+        SELECT '05' UNION ALL
+        SELECT '06' UNION ALL
+        SELECT '07' UNION ALL
+        SELECT '08' UNION ALL
+        SELECT '09' UNION ALL
+        SELECT '10' UNION ALL
+        SELECT '11' UNION ALL
+        SELECT '12'
       )
       SELECT
         mt.Month,
-        IFNULL(COUNT(t.id), 0) AS QuantitySold
+        COUNT(t.id) AS QuantitySold
       FROM
         MonthTable mt
       LEFT JOIN
-        transactions t ON MONTH(t.date) = mt.Month
-        AND YEAR(t.date) = 2025
-        AND t.type = 'sale'
-        AND company_id = ${vars.company_id}
-      WHERE
-        mt.Month IS NOT NULL
-        
+        transactions t 
+        ON DATE_FORMAT(t.date, '%m') = mt.Month
+          AND YEAR(t.date) = 2025
+          AND t.type = 'sale'
+          AND t.company_id = ${vars.company_id}
       GROUP BY
         mt.Month
       ORDER BY
-        mt.Month; 
+        mt.Month;
     `,
     1007: `
       WITH Calendar AS (
